@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Property | Rashmi Direct</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="main-header scrolled">
+        <nav class="container nav-bar">
+            <div class="logo">
+                <a href="index.html">
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Rashmi</span>
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Direct</span>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="properties.html">Properties</a></li>
+                <li><a href="sell.html" class="active">Sell Property</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="sell.html" class="btn btn-premium-cta">Post Property</a>
+                <div class="hamburger" id="hamburger">
+                    <i class="ri-menu-3-line"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="sell-page section-padding">
+        <div class="container" style="max-width: 800px;">
+            <div class="section-header">
+                <h2 class="premium-font">Brokers ko Hatao, <span class="text-gold">Direct Buyers Pao</span></h2>
+                <p>List your property in 4 simple steps and save lakhs in brokerage.</p>
+            </div>
+
+            <div class="sell-form-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                    <div class="progress-step active" data-title="Basic">1</div>
+                    <div class="progress-step" data-title="Media">2</div>
+                    <div class="progress-step" data-title="Price">3</div>
+                    <div class="progress-step" data-title="Finish">4</div>
+                </div>
+
+                <form id="sell-form" class="multi-step-form">
+                    <!-- Step 1 -->
+                    <div class="form-step active" id="step-1">
+                        <div class="step-header">
+                            <div class="step-icon-box"><i class="ri-community-line"></i></div>
+                            <div class="step-header-text">
+                                <h3>Property Basic Info</h3>
+                                <p>Start with the basics. This helps buyers find your property in search filters.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="ri-home-4-line"></i> Property Category</label>
+                                <select id="prop-type-select">
+                                    <option value="" disabled selected>Choose category</option>
+                                    <option>Apartment / Flat</option>
+                                    <option>Bungalow / Villa</option>
+                                    <option>Residential Plot</option>
+                                    <option>Commercial Space</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="ri-map-pin-2-line"></i> Exact Location</label>
+                                <div class="input-with-icon">
+                                    <input type="text" placeholder="e.g. Mira Road, Near Station, Mumbai">
+                                    <i class="ri-focus-3-line"></i>
+                                </div>
+                                <small class="form-hint">Buyers often search by nearby landmarks or station
+                                    proximity.</small>
+                            </div>
+                        </div>
+
+                        <div class="btns-group" style="margin-top: 30px;">
+                            <button type="button" class="btn btn-primary next-btn w-100">
+                                <span>Continue to Media</span>
+                                <i class="ri-arrow-right-m-line"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="form-step" id="step-2">
+                        <h3>Photos & Documents</h3>
+                        <div class="upload-box">
+                            <i class="ri-upload-cloud-line"></i>
+                            <p>Drag & Drop images or click to upload</p>
+                            <input type="file" multiple style="opacity:0; position:absolute; cursor:pointer;">
+                        </div>
+                        <div class="btns-group">
+                            <button type="button" class="btn btn-outline prev-btn">Previous</button>
+                            <button type="button" class="btn btn-primary next-btn">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 etc... placeholder for now -->
+                    <div class="form-step" id="step-3">
+                        <h3>Price & More Details</h3>
+                        <div class="form-group">
+                            <label>Expected Price (₹)</label>
+                            <input type="number" placeholder="85,00,000">
+                        </div>
+                        <div class="btns-group">
+                            <button type="button" class="btn btn-outline prev-btn">Previous</button>
+                            <button type="button" class="btn btn-primary next-btn">Next</button>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="form-step" id="step-4">
+                        <div style="text-align:center; padding: 40px 0;">
+                            <i class="ri-checkbox-circle-fill" style="font-size: 5rem; color: var(--success);"></i>
+                            <h3 style="margin-top:20px;">Ready to Post!</h3>
+                            <p>Verify your details and submit to list your property directly.</p>
+                        </div>
+                        <div class="btns-group">
+                            <button type="button" class="btn btn-outline prev-btn">Previous</button>
+                            <button type="submit" class="btn btn-primary">Submit Listing</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <i class="ri-checkbox-circle-fill" style="font-size: 4rem; color: var(--success);"></i>
+            <h2 class="premium-font">Listing Submitted!</h2>
+            <p>Your property has been sent for verification. Our team will contact you shortly.</p>
+            <a href="index.html" class="btn btn-primary" style="margin-top:20px;">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <h3 class="premium-font text-gold">Rashmi Direct</h3>
+                <p>Leading developers in Mira Road, Vasai, and Naigaon. Build trust, buy direct.</p>
+                <div class="social-links">
+                    <a href="#"><i class="ri-facebook-fill"></i></a>
+                    <a href="#"><i class="ri-instagram-line"></i></a>
+                    <a href="#"><i class="ri-whatsapp-line"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="properties.html">All Properties</a></li>
+                    <li><a href="sell.html">List Your Property</a></li>
+                    <li><a href="about.html">Our Story</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p><i class="ri-map-pin-2-line"></i> Mira Road, Mumbai</p>
+                <p><i class="ri-phone-line"></i> +91 98765 43210</p>
+                <p><i class="ri-mail-line"></i> info@rashmidirect.com</p>
+            </div>
+
+            <div class="footer-rera">
+                <h4>RERA Registered</h4>
+                <p>All projects are RERA registered. Verification available on request.</p>
+                <span class="text-gold">RERA ID: P51700012345</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Rashmi Land Developers. 0% Brokerage. Direct Connect.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
