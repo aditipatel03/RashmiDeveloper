@@ -2260,7 +2260,8 @@ section:nth-of-type(odd) {
 
     .contact-support-grid,
     .value-grid,
-    .stats-row {
+    .stats-row,
+    .grid-2 {
         grid-template-columns: 1fr;
         gap: 30px;
     }
@@ -2285,6 +2286,35 @@ section:nth-of-type(odd) {
 
 @media (max-width: 768px) {
 
+    /* Global Layout Fixes */
+    .container {
+        width: 90%;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .section-padding {
+        padding: 60px 0;
+    }
+
+    /* Trust Bar Stacking */
+    .trust-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .trust-card {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* Projects Grid Stacking */
+    .properties-grid,
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
     /* Typography Scaling */
     html {
         font-size: 14px;
@@ -2292,15 +2322,11 @@ section:nth-of-type(odd) {
 
     h1,
     .hero-content h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
 
     .section-header h2 {
-        font-size: 2rem;
-    }
-
-    .property-essential-info h1 {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
     }
 
     /* Layout Stacking */
@@ -2319,9 +2345,8 @@ section:nth-of-type(odd) {
         justify-content: center;
     }
 
-    .properties-grid {
+    .features-grid {
         grid-template-columns: 1fr;
-        padding: 0 15px;
     }
 
     .specs-row {
@@ -2329,17 +2354,35 @@ section:nth-of-type(odd) {
     }
 
     .amenities-badge-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
+        /* Force 1 column for badges on mobile */
+    }
+
+    /* Icon Sizing Fixes */
+    i {
+        max-width: 100%;
+    }
+
+    .reason-item i,
+    .trust-card i,
+    .timeline-content i {
+        font-size: 1.8rem;
+        /* Cap icon size */
     }
 
     /* Component Adjustments */
     .hero-search {
         flex-direction: column;
         padding: 15px;
+        height: auto;
     }
 
     .search-box {
         width: 100%;
+        margin-bottom: 10px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
     }
 
     .search-btn {
@@ -2357,6 +2400,12 @@ section:nth-of-type(odd) {
         text-align: center;
     }
 
+    /* Why Choose Us Image */
+    .why-image {
+        display: none;
+        /* Hide image on mobile to focus on content */
+    }
+
     /* Progress Bar for Mobile */
     .progress-bar {
         margin-bottom: 40px;
@@ -2370,27 +2419,22 @@ section:nth-of-type(odd) {
 
     .progress-step::before {
         font-size: 0.7rem;
-        /* Smaller text on mobile */
         top: 35px;
     }
 }
 
 @media (max-width: 480px) {
     .main-gallery {
-        height: 300px;
+        height: 250px;
     }
 
     .property-essential-info h1 {
-        font-size: 1.8rem;
-    }
-
-    .amenities-badge-grid {
-        grid-template-columns: 1fr;
+        font-size: 1.6rem;
     }
 
     .thumbnails img {
-        width: 70px;
-        height: 50px;
+        width: 60px;
+        height: 40px;
     }
 
     .btns-group {
