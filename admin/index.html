@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Rashmi Direct</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="brand-showcase">
+            <h2 style="font-family: 'Playfair Display'; margin: 0; font-size: 1.5rem;">Rashmi<span
+                    style="color: var(--admin-gold);">Direct</span></h2>
+            <p style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 2px;">ADMIN PORTAL</p>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">
+                    <i class="ri-dashboard-line"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="properties.html" class="nav-link">
+                    <i class="ri-building-line"></i> Properties
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="appointments.html" class="nav-link">
+                    <i class="ri-calendar-event-line"></i> Appointments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="users.html" class="nav-link">
+                    <i class="ri-user-line"></i> Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="ri-settings-4-line"></i> Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="user-avatar">AD</div>
+            <div class="user-info">
+                <h4 style="margin: 0; font-size: 0.9rem;">Admin User</h4>
+                <a href="../index.html"
+                    style="color: var(--admin-gold); font-size: 0.8rem; text-decoration: none;">Logout</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>Dashboard Overview</h2>
+                <p style="color: #666; font-size: 0.9rem;">Welcome back, Administrator</p>
+            </div>
+            <div class="actions">
+                <a href="add-property.html" class="action-btn">
+                    <i class="ri-add-line"></i> Add Property
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>12</h3>
+                    <p>Total Properties</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="ri-community-line"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>5</h3>
+                    <p>Pending Approvals</p>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(212, 175, 135, 0.2); color: var(--admin-gold);">
+                    <i class="ri-time-line"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>8</h3>
+                    <p>Visits Today</p>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(66, 133, 244, 0.1); color: #4285F4;">
+                    <i class="ri-calendar-check-line"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>1.2k</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(52, 168, 83, 0.1); color: #34A853;">
+                    <i class="ri-group-line"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="data-table-container">
+            <div class="table-header">
+                <h3>Recent Verification Requests</h3>
+                <a href="properties.html"
+                    style="color: var(--admin-sidebar); text-decoration: none; font-weight: 500;">View All</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>User</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Mock Data -->
+                    <tr>
+                        <td>2BHK Sun City</td>
+                        <td>Aditi Patel</td>
+                        <td>Vasai Road</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <button class="action-icon-btn approve"><i class="ri-check-line"></i></button>
+                            <button class="action-icon-btn delete"><i class="ri-close-line"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Luxury Villa</td>
+                        <td>Rahul Sharma</td>
+                        <td>Mira Road</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <button class="action-icon-btn approve"><i class="ri-check-line"></i></button>
+                            <button class="action-icon-btn delete"><i class="ri-close-line"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Commercial Shop</td>
+                        <td>Sneha Gupta</td>
+                        <td>Naigaon</td>
+                        <td><span class="status-badge status-active">Verified</span></td>
+                        <td>
+                            <button class="action-icon-btn edit"><i class="ri-pencil-line"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script src="../js/admin.js"></script>
+</body>
+
+</html>

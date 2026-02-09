@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Appointments | Admin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+    <aside class="admin-sidebar">
+        <div class="brand-showcase">
+            <h2 style="font-family: 'Playfair Display'; margin: 0; font-size: 1.5rem;">Rashmi<span
+                    style="color: var(--admin-gold);">Direct</span></h2>
+            <p style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 2px;">ADMIN PORTAL</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link"><i class="ri-dashboard-line"></i> Dashboard</a>
+            </li>
+            <li class="nav-item"><a href="properties.html" class="nav-link"><i class="ri-building-line"></i>
+                    Properties</a></li>
+            <li class="nav-item"><a href="appointments.html" class="nav-link active"><i
+                        class="ri-calendar-event-line"></i> Appointments</a></li>
+            <li class="nav-item"><a href="users.html" class="nav-link"><i class="ri-user-line"></i> Users</a></li>
+        </ul>
+    </aside>
+
+    <main class="admin-main">
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>Appointment Requests</h2>
+                <p style="color: #666; font-size: 0.9rem;">Schedule and manage site visits</p>
+            </div>
+            <div class="actions">
+                <button class="action-btn" onclick="alert('Syncing with Calendar...')">
+                    <i class="ri-refresh-line"></i> Sync Calendar
+                </button>
+            </div>
+        </div>
+
+        <div class="data-table-container">
+            <div class="table-actions" style="margin-bottom: 20px;">
+                <select class="admin-input" style="width: 200px;">
+                    <option>Today</option>
+                    <option>This Week</option>
+                    <option>Next Week</option>
+                </select>
+            </div>
+
+            <table id="appointments-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>User Name</th>
+                        <th>Property Interest</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Feb 10, 2024</strong><br><span style="font-size: 0.8rem; color: #888;">11:00
+                                AM</span></td>
+                        <td>Rahul Sharma</td>
+                        <td>Garden View Apt</td>
+                        <td><span
+                                style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Site
+                                Visit</span></td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>
+                            <button class="action-icon-btn approve" title="Confirm"><i
+                                    class="ri-check-line"></i></button>
+                            <button class="action-icon-btn delete" title="Cancel"><i class="ri-close-line"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feb 12, 2024</strong><br><span style="font-size: 0.8rem; color: #888;">02:30
+                                PM</span></td>
+                        <td>Priya Singh</td>
+                        <td>Skyline Heights</td>
+                        <td><span
+                                style="background: #f3e5f5; color: #7b1fa2; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Video
+                                Call</span></td>
+                        <td><span class="status-badge status-active">Confirmed</span></td>
+                        <td>
+                            <button class="action-icon-btn edit" title="Reschedule"><i
+                                    class="ri-calendar-line"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="../js/admin.js"></script>
+</body>
+
+</html>

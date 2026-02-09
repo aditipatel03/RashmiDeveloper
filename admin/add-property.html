@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Property | Admin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+    <aside class="admin-sidebar">
+        <div class="brand-showcase">
+            <h2 style="font-family: 'Playfair Display'; margin: 0; font-size: 1.5rem;">Rashmi<span
+                    style="color: var(--admin-gold);">Direct</span></h2>
+            <p style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 2px;">ADMIN PORTAL</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link"><i class="ri-dashboard-line"></i> Dashboard</a>
+            </li>
+            <li class="nav-item"><a href="properties.html" class="nav-link active"><i class="ri-building-line"></i>
+                    Properties</a></li>
+            <li class="nav-item"><a href="appointments.html" class="nav-link"><i class="ri-calendar-event-line"></i>
+                    Appointments</a></li>
+            <li class="nav-item"><a href="users.html" class="nav-link"><i class="ri-user-line"></i> Users</a></li>
+        </ul>
+    </aside>
+
+    <main class="admin-main">
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>Add New Property</h2>
+                <p style="color: #666; font-size: 0.9rem;">Fill in the details to publish a new listing</p>
+            </div>
+            <div class="actions">
+                <a href="properties.html" class="action-btn"
+                    style="background-color: transparent; color: #555; border: 1px solid #ddd;">Cancel</a>
+            </div>
+        </div>
+
+        <form class="admin-form-container" id="add-property-form">
+            <div class="form-grid-2">
+                <div class="form-col">
+                    <label class="admin-label">Property Title</label>
+                    <input type="text" class="admin-input" placeholder="e.g. Luxury 2BHK Apartment" required>
+                </div>
+                <div class="form-col">
+                    <label class="admin-label">Price (₹)</label>
+                    <input type="number" class="admin-input" placeholder="e.g. 5500000" required>
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-col">
+                    <label class="admin-label">Location</label>
+                    <select class="admin-input">
+                        <option>Mira Road</option>
+                        <option>Vasai Road</option>
+                        <option>Naigaon East</option>
+                    </select>
+                </div>
+                <div class="form-col">
+                    <label class="admin-label">Category</label>
+                    <select class="admin-input">
+                        <option>Apartment</option>
+                        <option>Villa / Bungalow</option>
+                        <option>Plot</option>
+                        <option>Commercial</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="admin-label">Description</label>
+                <textarea class="admin-input" rows="4" placeholder="Detailed description of the property..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="admin-label">Property Images</label>
+                <div
+                    style="border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer;">
+                    <i class="ri-cloud-upload-line" style="font-size: 2rem; color: var(--admin-gold);"></i>
+                    <p style="margin-top: 10px; color: #777;">Click to upload images</p>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 30px;">
+                <button type="submit" class="action-btn" style="width: 100%; justify-content: center; padding: 15px;">
+                    Publish Property
+                </button>
+            </div>
+        </form>
+    </main>
+    <script src="../js/admin.js"></script>
+</body>
+
+</html>

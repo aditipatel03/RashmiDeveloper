@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Properties | Admin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <aside class="admin-sidebar">
+        <div class="brand-showcase">
+            <h2 style="font-family: 'Playfair Display'; margin: 0; font-size: 1.5rem;">Rashmi<span
+                    style="color: var(--admin-gold);">Direct</span></h2>
+            <p style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 2px;">ADMIN PORTAL</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link"><i class="ri-dashboard-line"></i> Dashboard</a>
+            </li>
+            <li class="nav-item"><a href="properties.html" class="nav-link active"><i class="ri-building-line"></i>
+                    Properties</a></li>
+            <li class="nav-item"><a href="appointments.html" class="nav-link"><i class="ri-calendar-event-line"></i>
+                    Appointments</a></li>
+            <li class="nav-item"><a href="users.html" class="nav-link"><i class="ri-user-line"></i> Users</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="ri-settings-4-line"></i> Settings</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="user-avatar">AD</div>
+            <div class="user-info">
+                <h4 style="margin: 0; font-size: 0.9rem;">Admin User</h4>
+                <a href="../index.html"
+                    style="color: var(--admin-gold); font-size: 0.8rem; text-decoration: none;">Logout</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="top-bar">
+            <div class="page-title">
+                <h2>All Properties</h2>
+                <p style="color: #666; font-size: 0.9rem;">Manage and verify listings</p>
+            </div>
+            <div class="actions">
+                <a href="add-property.html" class="action-btn">
+                    <i class="ri-add-line"></i> Add New Property
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
+            <div class="stat-card" style="padding: 15px;">
+                <div class="stat-info">
+                    <h3 style="font-size: 1.5rem;">12</h3>
+                    <p>Active</p>
+                </div>
+                <div class="stat-icon"
+                    style="width: 40px; height: 40px; font-size: 1.2rem; background-color: #e6f4ea; color: #1e7e34;">
+                    <i class="ri-check-double-line"></i>
+                </div>
+            </div>
+            <div class="stat-card" style="padding: 15px;">
+                <div class="stat-info">
+                    <h3 style="font-size: 1.5rem;">5</h3>
+                    <p>Pending</p>
+                </div>
+                <div class="stat-icon"
+                    style="width: 40px; height: 40px; font-size: 1.2rem; background-color: #fff3cd; color: #856404;">
+                    <i class="ri-time-line"></i>
+                </div>
+            </div>
+            <div class="stat-card" style="padding: 15px;">
+                <div class="stat-info">
+                    <h3 style="font-size: 1.5rem;">3</h3>
+                    <p>Sold</p>
+                </div>
+                <div class="stat-icon"
+                    style="width: 40px; height: 40px; font-size: 1.2rem; background-color: #f8d7da; color: #721c24;">
+                    <i class="ri-money-dollar-circle-line"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-table-container">
+            <div class="table-actions" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" placeholder="Search properties..." class="admin-input"
+                    style="margin-bottom: 0; width: 300px;">
+                <select class="admin-input" style="margin-bottom: 0; width: 150px;">
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+
+            <table id="properties-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Image</th>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Posted By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="properties-table-body">
+                    <!-- Dynamic Content Loaded via JS -->
+                    <!-- Fallback Static Data for View -->
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=100"
+                                style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;"></td>
+                        <td><strong>Garden View Apt</strong><br><span style="font-size: 0.8rem; color: #888;">ID:
+                                #RD001</span></td>
+                        <td>Mira Road</td>
+                        <td>₹ 85 Lakhs</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td>Admin</td>
+                        <td>
+                            <button class="action-icon-btn edit"><i class="ri-pencil-line"></i></button>
+                            <button class="action-icon-btn delete"><i class="ri-delete-bin-line"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://images.unsplash.com/photo-1600596542815-500765eb1274?w=100"
+                                style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;"></td>
+                        <td><strong>Skyline Heights</strong><br><span style="font-size: 0.8rem; color: #888;">ID:
+                                #Pending02</span></td>
+                        <td>Vasai East</td>
+                        <td>₹ 45 Lakhs</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>Aditi Patel</td>
+                        <td>
+                            <button class="action-icon-btn approve" title="Verify & Publish"><i
+                                    class="ri-check-double-line"></i></button>
+                            <button class="action-icon-btn delete"><i class="ri-delete-bin-line"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="../js/admin.js"></script>
+</body>
+
+</html>
