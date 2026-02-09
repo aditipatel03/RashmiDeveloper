@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Rashmi Direct</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Dashboard Specific Styles */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 30px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            margin-bottom: 50px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(212, 175, 135, 0.15);
+            color: var(--accent-color);
+        }
+
+        .sidebar-menu i {
+            font-size: 1.2rem;
+        }
+
+        .dashboard-main {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .profile-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+            max-width: 800px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html">
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Rashmi</span>
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Direct</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="ri-dashboard-line"></i> Dashboard</a></li>
+                <li><a href="wishlist.html"><i class="ri-heart-line"></i> My Wishlist</a></li>
+                <li><a href="appointments.html"><i class="ri-calendar-event-line"></i> Appointments</a></li>
+                <li><a href="profile.html" class="active"><i class="ri-user-settings-line"></i> Profile</a></li>
+                <li style="margin-top: 50px;"><a href="../index.html"><i class="ri-logout-box-line"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <h2 class="premium-font">My <span class="text-gold">Profile</span></h2>
+                    <p>Manage your account settings and preferences.</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">AP</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">Aditi Patel</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">User</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="profile-container">
+                <form>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" value="Aditi Patel">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" value="aditi@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" value="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" value="Mumbai">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Current Address</label>
+                            <textarea rows="3">101, Sea View Apartment, Marine Drive, Mumbai - 400020</textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">
+                        Save Changes
+                    </button>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+
+</html>

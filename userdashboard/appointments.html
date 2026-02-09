@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments | Rashmi Direct</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Dashboard Specific Styles */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 30px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            margin-bottom: 50px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(212, 175, 135, 0.15);
+            color: var(--accent-color);
+        }
+
+        .sidebar-menu i {
+            font-size: 1.2rem;
+        }
+
+        .dashboard-main {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        /* Appointment Cards */
+        .appointment-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .apt-details h4 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .apt-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .apt-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .apt-status {
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .appointment-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html">
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Rashmi</span>
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Direct</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="ri-dashboard-line"></i> Dashboard</a></li>
+                <li><a href="wishlist.html"><i class="ri-heart-line"></i> My Wishlist</a></li>
+                <li><a href="appointments.html" class="active"><i class="ri-calendar-event-line"></i> Appointments</a>
+                </li>
+                <li><a href="profile.html"><i class="ri-user-settings-line"></i> Profile</a></li>
+                <li style="margin-top: 50px;"><a href="../index.html"><i class="ri-logout-box-line"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <h2 class="premium-font">My <span class="text-gold">Appointments</span></h2>
+                    <p>Track your scheduled site visits and calls.</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">AP</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">Aditi Patel</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">User</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="appointments-list">
+                <!-- Appointment 1 -->
+                <div class="appointment-card">
+                    <div class="apt-details">
+                        <h4>Site Visit - Rashmi Heights</h4>
+                        <div class="apt-meta">
+                            <span><i class="ri-calendar-line"></i> Feb 12, 2026</span>
+                            <span><i class="ri-time-line"></i> 11:00 AM</span>
+                            <span><i class="ri-map-pin-line"></i> Mira Road</span>
+                        </div>
+                    </div>
+                    <div class="apt-actions">
+                        <span class="apt-status status-confirmed">Confirmed</span>
+                    </div>
+                </div>
+
+                <!-- Appointment 2 -->
+                <div class="appointment-card">
+                    <div class="apt-details">
+                        <h4>Video Consultation - Green Valley</h4>
+                        <div class="apt-meta">
+                            <span><i class="ri-calendar-line"></i> Feb 15, 2026</span>
+                            <span><i class="ri-time-line"></i> 04:00 PM</span>
+                            <span><i class="ri-video-chat-line"></i> Google Meet</span>
+                        </div>
+                    </div>
+                    <div class="apt-actions">
+                        <span class="apt-status status-pending">Pending Confirmation</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+
+</html>

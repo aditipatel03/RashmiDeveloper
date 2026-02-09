@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard | Rashmi Direct</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Dashboard Specific Styles */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 30px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            margin-bottom: 50px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            transition: var(--transition-smooth);
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(212, 175, 135, 0.15);
+            color: var(--accent-color);
+        }
+
+        .sidebar-menu i {
+            font-size: 1.2rem;
+        }
+
+        .dashboard-main {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(10, 61, 47, 0.05);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .section-header-dash {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+                /* Hide sidebar on mobile for now, ideally toggle */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html">
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Rashmi</span>
+                    <span class="text-gold premium-font" style="font-size: 1.5rem;">Direct</span>
+                </a>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="index.html" class="active"><i class="ri-dashboard-line"></i> Dashboard</a></li>
+                <li><a href="wishlist.html"><i class="ri-heart-line"></i> My Wishlist</a></li>
+                <li><a href="appointments.html"><i class="ri-calendar-event-line"></i> Appointments</a></li>
+                <li><a href="profile.html"><i class="ri-user-settings-line"></i> Profile</a></li>
+                <li style="margin-top: 50px;"><a href="../index.html"><i class="ri-logout-box-line"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <h2 class="premium-font">Welcome back, <span class="text-gold">Aditi!</span></h2>
+                    <p>Here's what's happening with your property search.</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">AP</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">Aditi Patel</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">User</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ri-heart-3-line"></i></div>
+                    <div class="stat-info">
+                        <h3>4</h3>
+                        <p>Saved Properties</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ri-calendar-check-line"></i></div>
+                    <div class="stat-info">
+                        <h3>2</h3>
+                        <p>Upcoming Visits</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ri-message-3-line"></i></div>
+                    <div class="stat-info">
+                        <h3>1</h3>
+                        <p>Pending Enquiry</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity / Wishlist Preview -->
+            <div class="section-header-dash">
+                <h3>My Wishlist</h3>
+                <a href="#" class="btn btn-outline" style="padding: 8px 20px; font-size: 0.9rem;">View All</a>
+            </div>
+
+            <div class="wishlist-grid">
+                <!-- Reusing Project Cards with minor modification -->
+                <div class="project-card"
+                    style="background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-premium);">
+                    <div class="project-img" style="height: 200px; position: relative;">
+                        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="price-tag"
+                            style="position: absolute; bottom: 15px; left: 15px; background: rgba(10, 61, 47, 0.9); color: #fff; padding: 5px 15px; border-radius: 50px;">
+                            ₹85 L+</div>
+                    </div>
+                    <div class="project-info" style="padding: 20px;">
+                        <h3 style="margin-bottom: 5px;">Rashmi Heights</h3>
+                        <p style="color: grey; margin-bottom: 15px;"><i class="ri-map-pin-line"></i> Mira Road</p>
+                        <div class="project-actions">
+                            <button class="btn btn-premium-cta" style="width: 100%;">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card"
+                    style="background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-premium);">
+                    <div class="project-img" style="height: 200px; position: relative;">
+                        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="price-tag"
+                            style="position: absolute; bottom: 15px; left: 15px; background: rgba(10, 61, 47, 0.9); color: #fff; padding: 5px 15px; border-radius: 50px;">
+                            ₹2.5 Cr+</div>
+                    </div>
+                    <div class="project-info" style="padding: 20px;">
+                        <h3 style="margin-bottom: 5px;">Green Valley Villas</h3>
+                        <p style="color: grey; margin-bottom: 15px;"><i class="ri-map-pin-line"></i> Naigaon</p>
+                        <div class="project-actions">
+                            <button class="btn btn-premium-cta" style="width: 100%;">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+
+</html>
