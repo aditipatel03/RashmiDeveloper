@@ -27,6 +27,8 @@
             <li class="nav-item"><a href="appointments.html" class="nav-link"><i class="ri-calendar-event-line"></i>
                     Appointments</a></li>
             <li class="nav-item"><a href="users.html" class="nav-link"><i class="ri-user-line"></i> Users</a></li>
+            <li class="nav-item"><a href="settings.html" class="nav-link"><i class="ri-settings-4-line"></i>
+                    Settings</a></li>
         </ul>
     </aside>
 
@@ -46,18 +48,19 @@
             <div class="form-grid-2">
                 <div class="form-col">
                     <label class="admin-label">Property Title</label>
-                    <input type="text" class="admin-input" placeholder="e.g. Luxury 2BHK Apartment" required>
+                    <input type="text" id="prop-title" class="admin-input" placeholder="e.g. Luxury 2BHK Apartment"
+                        required>
                 </div>
                 <div class="form-col">
                     <label class="admin-label">Price (₹)</label>
-                    <input type="number" class="admin-input" placeholder="e.g. 5500000" required>
+                    <input type="number" id="prop-price" class="admin-input" placeholder="e.g. 5500000" required>
                 </div>
             </div>
 
             <div class="form-grid-2">
                 <div class="form-col">
                     <label class="admin-label">Location</label>
-                    <select class="admin-input">
+                    <select id="prop-location" class="admin-input">
                         <option>Mira Road</option>
                         <option>Vasai Road</option>
                         <option>Naigaon East</option>
@@ -65,7 +68,7 @@
                 </div>
                 <div class="form-col">
                     <label class="admin-label">Category</label>
-                    <select class="admin-input">
+                    <select id="prop-category" class="admin-input">
                         <option>Apartment</option>
                         <option>Villa / Bungalow</option>
                         <option>Plot</option>

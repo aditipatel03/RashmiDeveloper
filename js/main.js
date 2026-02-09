@@ -146,6 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sellForm && successModal) {
         sellForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            // Capture Data
+            const newProperty = {
+                id: Date.now(), // Unique ID based on timestamp
+                title: document.getElementById('prop-title').value,
+                category: document.getElementById('prop-type-select').value,
+                location: document.getElementById('prop-location').value,
+                price: document.getElementById('prop-price').value,
+                status: 'pending', // Explicitly marked as pending for admin review
+                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+                verified: false,
+                image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80' // Default placeholder
+            };
+
+            // Save to LocalStorage
+            let customProperties = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
+            customProperties.push(newProperty);
+            localStorage.setItem('rld_custom_properties', JSON.stringify(customProperties));
+
             successModal.classList.add('active');
         });
     }

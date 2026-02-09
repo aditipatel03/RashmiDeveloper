@@ -32,8 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
         countSpan.textContent = data.length;
     }
 
+    // --- Dynamic Data Sync ---
+    // Fetch custom properties from localStorage (only approved ones)
+    const customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
+    const approvedProps = customProps.filter(p => p.status === 'active');
+
+    // Merge with static properties from data.js
+    const allProperties = [...properties, ...approvedProps];
+
     // Initial Render
-    renderProperties(properties);
+    renderProperties(allProperties);
 
     // Sorting Logic
     const sortSelect = document.getElementById('sort-by');
@@ -60,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const maxPrice = parseInt(priceSlider.value);
         const sortCriteria = sortSelect.value;
 
-        let filtered = properties.filter(p => {
+        let filtered = allProperties.filter(p => {
             const matchType = selectedTypes.length === 0 || selectedTypes.includes(p.category);
             const matchLoc = !selectedLocation || p.location.includes(selectedLocation);
 
