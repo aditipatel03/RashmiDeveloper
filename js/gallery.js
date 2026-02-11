@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div class="property-essential-info">
-                <div class="detail-badge">Rashmi Direct Exclusive • 0% Brokerage</div>
+                <div class="detail-badge">Rashmi Land Developers Exclusive • 0% Brokerage</div>
                 <h1 class="premium-font">${prop.title}</h1>
                 <p class="location-tag"><i class="ri-map-pin-line"></i> ${prop.location}</p>
                 
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </form>
 
                 <div class="direct-actions">
-                    <a href="https://wa.me/919876543210" class="btn btn-whatsapp w-100">
+                    <a href="https://wa.me/917262993832" class="btn btn-whatsapp w-100">
                         <i class="ri-whatsapp-line"></i> Chat on WhatsApp
                     </a>
                     <button class="btn btn-outline w-100"><i class="ri-calendar-check-line"></i> Book Site Visit</button>
