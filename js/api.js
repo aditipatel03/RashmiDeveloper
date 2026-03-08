@@ -3,15 +3,23 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
     : '/api';
 
 const api = {
+    async handleResponse(response) {
+        if (response.status === 401) {
+            this.logout();
+            throw new Error('Unauthorized');
+        }
+        return await response.json();
+    },
+
     // Properties
     async getProperties() {
         const response = await fetch(`${API_URL}/properties`);
-        return await response.json();
+        return await response.json(); // Public
     },
 
     async getProperty(id) {
         const response = await fetch(`${API_URL}/properties/${id}`);
-        return await response.json();
+        return await response.json(); // Public
     },
 
     async addProperty(formData) {
@@ -20,7 +28,7 @@ const api = {
             headers: { 'x-auth-token': this.getToken() },
             body: formData
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async updateProperty(id, formData) {
@@ -29,7 +37,7 @@ const api = {
             headers: { 'x-auth-token': this.getToken() },
             body: formData
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async deleteProperty(id) {
@@ -37,7 +45,7 @@ const api = {
             method: 'DELETE',
             headers: { 'x-auth-token': this.getToken() }
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async verifyProperty(id) {
@@ -49,7 +57,7 @@ const api = {
             },
             body: JSON.stringify({ verified: true })
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     // Appointments
@@ -57,7 +65,7 @@ const api = {
         const response = await fetch(`${API_URL}/appointments`, {
             headers: { 'x-auth-token': this.getToken() }
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async submitAppointment(data) {
@@ -74,7 +82,7 @@ const api = {
             method: 'DELETE',
             headers: { 'x-auth-token': this.getToken() }
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     // Auth
@@ -119,21 +127,21 @@ const api = {
             },
             body: JSON.stringify({ password })
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async getDashboardStats() {
         const response = await fetch(`${API_URL}/stats`, {
             headers: { 'x-auth-token': this.getToken() }
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async getUsersList() {
         const response = await fetch(`${API_URL}/users`, {
             headers: { 'x-auth-token': this.getToken() }
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     async trackVisit() {
@@ -153,7 +161,7 @@ const api = {
             method: 'DELETE',
             headers: { 'x-auth-token': this.getToken() }
         });
-        return await response.json();
+        return await this.handleResponse(response);
     },
 
     getToken() {
