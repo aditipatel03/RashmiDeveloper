@@ -26,6 +26,7 @@ router.get('/properties/:id', propertyController.getProperty);
 router.post('/properties', auth, upload.array('images', 10), propertyController.createProperty);
 router.put('/properties/:id', auth, upload.array('images', 10), propertyController.updateProperty);
 router.delete('/properties/:id', auth, propertyController.deleteProperty);
+router.patch('/properties/:id/status', auth, propertyController.updateStatus);
 router.post('/properties/:id/restore', auth, propertyController.restoreProperty);
 
 // Appointment Routes

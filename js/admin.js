@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${prop.category}</td>
                     <td>₹ ${prop.price}</td>
                     <td>${prop.location}</td>
-                    <td><span class="status-badge status-${(prop.status || 'Active').toLowerCase()}">${prop.status || 'Active'}</span></td>
+                    <td><span class="status-badge status-${(prop.status || 'Active').toLowerCase()}" onclick="togglePropertyStatus('${prop.id}', '${prop.status || 'Active'}')">${prop.status || 'Active'}</span></td>
                     <td>
                         <div style="display: flex; gap: 5px;">
                             <button class="action-icon-btn edit" onclick="window.location.href='add-property.html?id=${prop.id}'"><i class="ri-edit-line"></i></button>
@@ -110,6 +110,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">Error loading properties.</td></tr>';
         }
     }
+
+    window.togglePropertyStatus = async (id, currentStatus) => {
+        const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+        try {
+            const result = await window.api.updatePropertyStatus(id, newStatus);
+            if (result) {
+                window.notifications.show(`Property marked as ${newStatus}`, 'success');
+                renderAdminProperties();
+                refreshStats();
+            }
+        } catch (err) {
+            window.notifications.show('Failed to update status', 'error');
+        }
+    };
 
     window.deleteProperty = async (id) => {
         if (confirm('Are you sure you want to delete this property?')) {
@@ -196,7 +210,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('prop-desc').value = prop.description;
                 document.getElementById('prop-type').value = prop.type;
                 document.getElementById('prop-area').value = prop.area;
-                document.getElementById('prop-status').value = prop.status || 'Active';
                 document.getElementById('prop-availability').value = prop.availability || 'Ready to Move';
                 document.getElementById('prop-possession').value = prop.possession;
                 document.getElementById('prop-rera').value = prop.rera;
@@ -316,7 +329,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('description', document.getElementById('prop-desc').value);
             formData.append('type', document.getElementById('prop-type').value);
             formData.append('area', document.getElementById('prop-area').value);
-            formData.append('status', document.getElementById('prop-status').value);
             formData.append('availability', document.getElementById('prop-availability').value);
             formData.append('possession', document.getElementById('prop-possession').value);
             formData.append('rera', document.getElementById('prop-rera').value);

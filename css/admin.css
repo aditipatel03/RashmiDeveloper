@@ -310,6 +310,14 @@ tr:hover td {
     font-size: 0.8rem;
     font-weight: 600;
     display: inline-block;
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.status-badge:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
 }
 
 .status-active {

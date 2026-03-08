@@ -40,6 +40,18 @@ const api = {
         return await this.handleResponse(response);
     },
 
+    async updatePropertyStatus(id, status) {
+        const response = await fetch(`${API_URL}/properties/${id}/status`, {
+            method: 'PATCH',
+            headers: {
+                'x-auth-token': this.getToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status })
+        });
+        return await this.handleResponse(response);
+    },
+
     async deleteProperty(id) {
         const response = await fetch(`${API_URL}/properties/${id}`, {
             method: 'DELETE',

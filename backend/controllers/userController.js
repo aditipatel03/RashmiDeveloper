@@ -129,8 +129,8 @@ exports.getStats = async (req, res) => {
         if (userError || propError) throw userError || propError;
 
         const totalProperties = propStats.length;
-        const pendingProperties = propStats.filter(p => !p.verified).length;
-        const activeProperties = propStats.filter(p => p.verified).length;
+        const pendingProperties = propStats.filter(p => (p.status || 'Active') === 'Inactive').length;
+        const activeProperties = propStats.filter(p => (p.status || 'Active') === 'Active').length;
         const soldProperties = propStats.filter(p => p.status?.toLowerCase().includes('sold')).length;
 
         res.json({

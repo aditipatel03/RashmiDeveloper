@@ -196,3 +196,19 @@ exports.restoreProperty = async (req, res) => {
         res.status(500).json({ msg: err.message });
     }
 };
+
+exports.updateStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { data, error } = await supabase
+            .from('properties')
+            .update({ status })
+            .eq('id', req.params.id)
+            .select();
+
+        if (error) throw error;
+        res.json(data[0]);
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
