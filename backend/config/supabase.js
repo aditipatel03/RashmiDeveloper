@@ -12,8 +12,14 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-const supabaseAdmin = process.env.SUPABASE_SERVICE_ROLE_KEY
-    ? createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY)
-    : supabase;
+
+let supabaseAdmin;
+if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabaseAdmin = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY);
+    console.log('✅ Supabase Admin (Service Role) client enabled');
+} else {
+    supabaseAdmin = supabase;
+    console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY is missing from .env - Admin features will not work');
+}
 
 module.exports = { supabase, supabaseAdmin };
