@@ -54,7 +54,7 @@
                         <span class="checkmark"></span>
                     </label>
                     <label class="check-container">Bungalows / Villas
-                        <input type="checkbox" name="type" value="Bungalow">
+                        <input type="checkbox" name="type" value="Villa / Bungalow">
                         <span class="checkmark"></span>
                     </label>
                 </div>
@@ -83,7 +83,9 @@
                         }
 
                         .slider {
+                            appearance: none;
                             -webkit-appearance: none;
+                            -moz-appearance: none;
                             width: 100%;
                             height: 6px;
                             border-radius: 5px;
@@ -111,7 +113,7 @@
                             color: #888;
                         }
                     </style>
-                    <select id="location-filter">
+                    <select id="location-filter" autocomplete="off">
                         <option value="">All Locations</option>
                     </select>
                 </div>

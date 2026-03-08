@@ -6,6 +6,7 @@ let properties = [];
 const loadProperties = async () => {
     try {
         properties = await window.api.getProperties();
+        console.log('Raw properties from API:', properties);
         // Filter out inactive properties for public view
         const activeProperties = properties.filter(p => p.status && p.status.toLowerCase() === 'active');
         console.log('Active properties loaded:', activeProperties);

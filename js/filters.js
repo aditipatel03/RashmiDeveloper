@@ -24,9 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const locationSelect = document.getElementById('location-filter');
         if (!locationSelect) return;
 
-        const locations = [...new Set(data.map(p => p.location.split(',')[0].trim()))].sort();
+        const currentValue = locationSelect.value;
+        const locations = [...new Set(data.map(p => p.location?.split(',')[0].trim()))].filter(Boolean).sort();
+
         locationSelect.innerHTML = '<option value="">All Locations</option>' +
             locations.map(loc => `<option value="${loc}">${loc}</option>`).join('');
+
+        // Restore value if it still exists in the new list
+        if (currentValue && locations.includes(currentValue)) {
+            locationSelect.value = currentValue;
+        }
     }
 
     function setupPriceSlider(data) {
@@ -123,9 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let filtered = allProperties.filter(p => {
             const matchType = selectedTypes.length === 0 || selectedTypes.includes(p.category);
-            const matchLoc = !selectedLocation || p.location.toLowerCase().includes(selectedLocation.toLowerCase());
+            const matchLoc = !selectedLocation || p.location?.trim().toLowerCase().includes(selectedLocation.trim().toLowerCase());
             const priceNum = getPriceValue(p.price);
             const matchPrice = priceNum <= maxPrice;
+
+            console.log(`Checking property "${p.title}":`, {
+                category: p.category, matchType,
+                location: p.location, matchLoc,
+                price: p.price, priceNum, maxPrice, matchPrice
+            });
 
             return matchType && matchLoc && matchPrice;
         });
@@ -156,14 +169,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('location-filter')?.addEventListener('change', applyFilters);
     applyBtn?.addEventListener('click', applyFilters);
 
-    // Initial check in case properties were loaded before this script initialized
-    if (typeof window.getProperties === 'function') {
-        allProperties = window.getProperties().filter(p => p.status === 'Active');
-        if (allProperties.length > 0) {
-            console.log('Initializing filters with pre-loaded properties:', allProperties.length);
-            populateLocations(allProperties);
-            setupPriceSlider(allProperties);
-            applyFilters();
+    // Consolidated initialization
+    let isInitialized = false;
+    const tryInitialize = (sourceData) => {
+        const data = sourceData || (typeof window.getProperties === 'function' ? window.getProperties() : []);
+        if (data && data.length > 0) {
+            allProperties = data.filter(p => p.status && p.status.toLowerCase() === 'active');
+            if (allProperties.length > 0 && !isInitialized) {
+                console.log('Initializing filters with properties:', allProperties.length);
+                populateLocations(allProperties);
+                setupPriceSlider(allProperties);
+                applyFilters();
+                isInitialized = true;
+            }
         }
-    }
+    };
+
+    // Handle data loaded event
+    document.addEventListener('propertiesLoaded', (e) => {
+        tryInitialize(e.detail);
+    });
+
+    tryInitialize();
 });
