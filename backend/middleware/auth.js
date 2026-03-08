@@ -1,4 +1,4 @@
-const supabase = require('../config/supabase');
+const { supabase } = require('../config/supabase');
 
 module.exports = async (req, res, next) => {
     const token = req.header('x-auth-token');

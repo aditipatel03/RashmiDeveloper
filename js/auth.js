@@ -66,4 +66,71 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Forgot Password Form Handler
+    const forgotForm = document.getElementById('forgotForm');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = forgotForm.querySelector('input[type="email"]').value;
+            const btn = forgotForm.querySelector('button');
+
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Sending...';
+            btn.disabled = true;
+
+            try {
+                const result = await window.api.forgotPassword(email);
+                window.notifications.show(result.msg, result.msg.includes('sent') ? 'success' : 'error');
+                if (result.msg.includes('sent')) {
+                    forgotForm.reset();
+                }
+            } catch (err) {
+                window.notifications.show('Error sending instructions', 'error');
+            } finally {
+                btn.innerHTML = 'Send Instructions <i class="ri-send-plane-fill"></i>';
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // Reset Password Form Handler (if on reset-password.html)
+    const resetForm = document.getElementById('resetForm');
+    if (resetForm) {
+        // Handle Supabase Hash fragment if any
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token')) {
+            const params = new URLSearchParams(hash.replace('#', '?'));
+            const token = params.get('access_token');
+            if (token) localStorage.setItem('rld_token', token);
+        }
+
+        resetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = resetForm.querySelector('input[placeholder="New Password"]').value;
+            const confirm = resetForm.querySelector('input[placeholder="Confirm Password"]').value;
+
+            if (password !== confirm) {
+                return window.notifications.show('Passwords do not match', 'error');
+            }
+
+            const btn = resetForm.querySelector('button');
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Updating...';
+            btn.disabled = true;
+
+            try {
+                const result = await window.api.resetPassword(password);
+                if (result.msg.includes('success')) {
+                    window.notifications.show('Password updated! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                } else {
+                    window.notifications.show(result.msg, 'error');
+                }
+            } catch (err) {
+                window.notifications.show('Error updating password', 'error');
+            } finally {
+                btn.innerHTML = 'Reset Password';
+                btn.disabled = false;
+            }
+        });
+    }
 });

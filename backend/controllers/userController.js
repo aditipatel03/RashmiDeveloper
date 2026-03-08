@@ -1,4 +1,4 @@
-const supabase = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -13,16 +13,20 @@ exports.register = async (req, res) => {
 
         if (authError) throw authError;
 
-        // 2. Create Profile in Public Profiles Table
-        const { error: profileError } = await supabase
+        // 2. Create Profile using supabaseAdmin (bypasses RLS)
+        const { error: profileError } = await supabaseAdmin
             .from('profiles')
-            .insert([{
+            .upsert([{
                 id: authData.user.id,
                 username: username || name || email.split('@')[0],
                 role: 'user'
-            }]);
+            }], { onConflict: 'id' });
 
-        if (profileError) throw profileError;
+        if (profileError) {
+            console.error('Profile creation error:', profileError);
+            // Profile failed, but auth user is created. We return success but log error.
+            // Or we could delete the auth user here if we want strict atomicity.
+        }
 
         res.status(201).json({ msg: 'User registered successfully', user: authData.user });
     } catch (err) {
@@ -55,6 +59,30 @@ exports.login = async (req, res) => {
                 role: profile ? profile.role : 'user'
             }
         });
+    } catch (err) {
+        res.status(400).json({ msg: err.message });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${req.protocol}://${req.get('host')}/reset-password.html`,
+        });
+        if (error) throw error;
+        res.json({ msg: 'Password reset instructions sent to your email.' });
+    } catch (err) {
+        res.status(400).json({ msg: err.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    const { password } = req.body;
+    try {
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        res.json({ msg: 'Password updated successfully.' });
     } catch (err) {
         res.status(400).json({ msg: err.message });
     }

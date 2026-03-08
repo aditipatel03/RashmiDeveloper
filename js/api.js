@@ -101,6 +101,27 @@ const api = {
         return await response.json();
     },
 
+    async forgotPassword(email) {
+        const response = await fetch(`${API_URL}/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        return await response.json();
+    },
+
+    async resetPassword(password) {
+        const response = await fetch(`${API_URL}/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': this.getToken()
+            },
+            body: JSON.stringify({ password })
+        });
+        return await response.json();
+    },
+
     getToken() {
         return localStorage.getItem('rld_token');
     },
