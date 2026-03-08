@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         priceSlider.min = 0;
         priceSlider.max = maxPrice;
+        priceSlider.step = 1; // Precise matching
         priceSlider.value = maxPrice;
 
         const sliderMin = document.getElementById('slider-min');
@@ -122,17 +123,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const selectedTypes = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(cb => cb.value);
         const selectedLocation = document.getElementById('location-filter').value;
-        const maxPrice = priceSlider ? parseInt(priceSlider.value) : Infinity;
+        const maxPrice = priceSlider ? parseFloat(priceSlider.value) : Infinity;
         const sortCriteria = sortSelect ? sortSelect.value : 'newest';
 
+        // Check if slider is at true maximum
+        const isAtMax = priceSlider && parseFloat(priceSlider.value) >= parseFloat(priceSlider.max);
+
         console.log('Applying filters to', allProperties.length, 'properties');
-        console.log('Filter criteria:', { selectedTypes, selectedLocation, maxPrice });
+        console.log('Filter criteria:', { selectedTypes, selectedLocation, maxPrice, isAtMax });
 
         let filtered = allProperties.filter(p => {
             const matchType = selectedTypes.length === 0 || selectedTypes.includes(p.category);
             const matchLoc = !selectedLocation || p.location?.trim().toLowerCase().includes(selectedLocation.trim().toLowerCase());
             const priceNum = getPriceValue(p.price);
-            const matchPrice = priceNum <= maxPrice;
+
+            // If slider is at max, show everything above it too (inclusive)
+            const matchPrice = isAtMax ? true : (priceNum <= maxPrice);
 
             console.log(`Checking property "${p.title}":`, {
                 category: p.category, matchType,
