@@ -93,7 +93,7 @@ const api = {
     },
 
     async register(data) {
-        const response = await fetch(`${API_URL}/users/register`, {
+        const response = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
