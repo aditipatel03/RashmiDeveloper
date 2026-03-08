@@ -1,88 +1,26 @@
-const properties = [
-    {
-        id: 1,
-        title: "Rashmi Heights",
-        type: "2 BHK Luxury Home",
-        category: "Apartment",
-        price: "85,00,000",
-        location: "Raigad",
-        area: "1050 sqft",
-        status: "Ready to Move",
-        verified: true,
-        brokerage: 0,
-        featured: true,
-        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        description: "Experience the pinnacle of urban living at Rashmi Heights. Located in the flourishing neighborhood of Raigad, this project offers meticulously designed 2 BHK apartments that blend comfort with modern elegance. Enjoy direct developer pricing and save lakhs on brokerage. The property features spacious balconies with city views and high-end fitments.",
-        amenities: ["Rooftop Swimming Pool", "State-of-the-art Gym", "Automated Parking", "24/7 Security", "Children's Play Area", "Clubhouse"],
-        possession: "June 2026",
-        rera: "P51700012345",
-        floor: "G + 20 Storeys",
-        facing: "East",
-        furnishing: "Semi-Furnished"
-    },
-    {
-        id: 2,
-        title: "Golden Sands",
-        type: "Premium Residential Plot",
-        category: "Plot",
-        price: "45,00,000",
-        location: "Pali",
-        area: "2000 sqft",
-        status: "Limited Availability",
-        verified: true,
-        brokerage: 0,
-        featured: true,
-        image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        description: "Build your dream bungalow at Golden Sands, a gated community offering the finest residential plots in Pali. Surrounded by greenery and peace, yet close to the station and highways. These plots are N.A. certified and come with individual water connections. Start building today in a community designed for luxury.",
-        amenities: ["Gated Perimeter", "PavedInternal Roads", "Street Lights", "24/7 Water Supply", "Landscape Garden", "Temple"],
-        possession: "Dec 2026",
-        rera: "P51700067890",
-        floor: "N/A",
-        facing: "North-West",
-        furnishing: "N/A"
-    },
-    {
-        id: 3,
-        title: "Green Valley Villas",
-        type: "Royal 4 BHK Villa",
-        category: "Bungalow",
-        price: "2,50,00,000",
-        location: "Mangao",
-        area: "3500 sqft",
-        status: "Construction in Progress",
-        verified: true,
-        brokerage: 0,
-        featured: true,
-        image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        description: "Luxury reimagined. Green Valley Villas offer an exclusive lifestyle in Mangao. Each villa comes with a private pool, wooden deck, and a designer garden. Experience the joy of living in a 3-storey bungalow with double-height ceilings and a private elevator option. Dealing directly with Rashmi Developers ensures full transparency and the best deal.",
-        amenities: ["Private Swimming Pool", "Home Automation", "Private Lift", "Party Deck", "VRV Air Conditioning", "Jogging Track"],
-        possession: "Dec 2026",
-        rera: "P51700054321",
-        floor: "G+2 Structure",
-        facing: "South",
-        furnishing: "Unfurnished"
-    },
-    {
-        id: 4,
-        title: "Skyline Residency",
-        type: "1 BHK Urban Studio",
-        category: "Apartment",
-        price: "55,00,000",
-        location: "Raigad",
-        area: "650 sqft",
-        status: "New Launch",
-        verified: true,
-        brokerage: 0,
-        featured: false,
-        image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        description: "Perfect for young professionals and small families. Skyline Residency offers smart 1 BHK homes that maximize space utility and provide all modern comforts at an affordable price point.",
-        amenities: ["Intercom Facility", "Fire Fighting System", "Power Backup", "Rainwater Harvesting"],
-        possession: "June 2027",
-        rera: "P51700099887",
-        floor: "G + 15 Storeys",
-        facing: "West",
-        furnishing: "Semi-furnished"
-    }
-];
+// This file now acts as a bridge to the API for backward compatibility
+// but will eventually be replaced by direct API calls in modern parts of the app
 
-// Data made available globally
+let properties = [];
+
+const loadProperties = async () => {
+    try {
+        properties = await window.api.getProperties();
+        console.log('Properties loaded from API:', properties);
+        // Trigger a custom event so other scripts know data is ready
+        document.dispatchEvent(new CustomEvent('propertiesLoaded', { detail: properties }));
+    } catch (err) {
+        console.error('Failed to load properties:', err);
+    }
+};
+
+// Initial load
+if (window.api) {
+    loadProperties();
+} else {
+    document.addEventListener('DOMContentLoaded', loadProperties);
+}
+
+// Export for scripts that still use the global properties array
+// Note: This won't be reactive. Better to use the event or a getter.
+window.getProperties = () => properties;

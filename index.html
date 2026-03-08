@@ -541,7 +541,39 @@
         </div>
     </footer>
 
+    <script src="js/api.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/data.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('propertiesLoaded', (e) => {
+            const properties = e.detail.filter(p => p.featured);
+            const grid = document.querySelector('.projects-grid');
+            if (grid) {
+                grid.innerHTML = properties.map(p => `
+                    <div class="project-card">
+                        <div class="project-img">
+                            ${p.verified ? '<span class="badge-verified">Rashmi Verified</span>' : ''}
+                            <img src="${p.image.startsWith('/') ? 'http://localhost:5000' + p.image : p.image}" alt="${p.title}">
+                            <div class="price-tag">₹${p.price}${p.price.includes('Cr') || p.price.includes('L') ? '' : ' L'}+</div>
+                        </div>
+                        <div class="project-info">
+                            <h3>${p.title}</h3>
+                            <p><i class="ri-map-pin-line"></i> ${p.location}</p>
+                            <div class="project-meta">
+                                <span><i class="ri-layout-grid-line"></i> ${p.type.split(' ')[0]}</span>
+                                <span><i class="ri-ruler-2-line"></i> ${p.area}</span>
+                            </div>
+                            <div class="project-actions">
+                                <a href="property-detail.html?id=${p._id}" class="btn btn-outline">View Details <i class="ri-arrow-right-line"></i></a>
+                                <button class="btn btn-primary" onclick="window.open('https://wa.me/917262993832?text=I am interested in ${p.title}')"><i class="ri-whatsapp-line"></i> Chat</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,4 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Check Authentication
+    const token = window.api.getToken();
+    if (!token && !window.location.pathname.includes('login.html')) {
+        // window.location.href = '../login.html'; // Assuming login is in root
+    }
 
     // Sidebar Navigation Highlighting
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -17,87 +22,81 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAdminProperties();
     }
 
-    function renderAdminProperties() {
+    async function renderAdminProperties() {
         const tbody = adminPropsTable.querySelector('tbody');
-        const customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
+        try {
+            const properties = await window.api.getProperties();
 
-        if (customProps.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No custom properties found. Submit one via the "Sell Property" page!</td></tr>';
-            return;
-        }
+            if (properties.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No properties found in database.</td></tr>';
+                return;
+            }
 
-        tbody.innerHTML = customProps.map(prop => `
-            <tr>
-                <td>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="${prop.image}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
-                        <div>
-                            <strong style="display: block;">${prop.title}</strong>
-                            <span style="font-size: 0.8rem; color: #888;">ID: #${prop.id.toString().slice(-6)}</span>
+            tbody.innerHTML = properties.map(prop => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <img src="${prop.image.startsWith('/') ? 'http://localhost:5000' + prop.image : prop.image}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                            <div>
+                                <strong style="display: block;">${prop.title}</strong>
+                                <span style="font-size: 0.8rem; color: #888;">ID: #${prop._id.toString().slice(-6)}</span>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td>${prop.category}</td>
-                <td>₹ ${prop.price}</td>
-                <td>${prop.location}</td>
-                <td><span class="status-badge status-${prop.status}">${prop.status.charAt(0).toUpperCase() + prop.status.slice(1)}</span></td>
-                <td>
-                    <div style="display: flex; gap: 5px;">
-                        ${prop.status === 'pending' ? `
-                            <button class="action-icon-btn approve" onclick="approveProperty(${prop.id})" title="Approve & Publish">
-                                <i class="ri-checkbox-circle-line"></i>
+                    </td>
+                    <td>${prop.category}</td>
+                    <td>₹ ${prop.price}</td>
+                    <td>${prop.location}</td>
+                    <td><span class="status-badge status-${prop.status === 'Ready to Move' ? 'active' : 'pending'}">${prop.status}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="action-icon-btn edit" onclick="window.location.href='add-property.html?id=${prop._id}'"><i class="ri-edit-line"></i></button>
+                            <button class="action-icon-btn delete" onclick="deleteProperty('${prop._id}')" title="Delete Listing">
+                                <i class="ri-delete-bin-line"></i>
                             </button>
-                        ` : ''}
-                        <button class="action-icon-btn edit" onclick="alert('Edit feature coming soon!')"><i class="ri-edit-line"></i></button>
-                        <button class="action-icon-btn delete" onclick="deleteProperty(${prop.id})" title="Delete Listing">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error('Failed to load admin properties:', err);
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: red;">Error loading properties.</td></tr>';
+        }
     }
 
-    // Expose functions to window for onclick handlers
-    window.approveProperty = (id) => {
-        let customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
-        const index = customProps.findIndex(p => p.id === id);
-        if (index !== -1) {
-            customProps[index].status = 'active';
-            customProps[index].verified = true;
-            localStorage.setItem('rld_custom_properties', JSON.stringify(customProps));
-            alert('Property approved and is now live!');
-            renderAdminProperties();
-            updateDashboardStats(); // If on index
-        }
-    };
-
-    window.deleteProperty = (id) => {
+    window.deleteProperty = async (id) => {
         if (confirm('Are you sure you want to delete this property?')) {
-            let customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
-            customProps = customProps.filter(p => p.id !== id);
-            localStorage.setItem('rld_custom_properties', JSON.stringify(customProps));
-            renderAdminProperties();
-            updateDashboardStats(); // If on index
+            try {
+                const response = await fetch(`http://localhost:5000/api/properties/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'x-auth-token': window.api.getToken() }
+                });
+                if (response.ok) {
+                    window.notifications.show('Property deleted successfully', 'success');
+                    renderAdminProperties();
+                    updateDashboardStats();
+                } else {
+                    window.notifications.show('Failed to delete property', 'error');
+                }
+            } catch (err) {
+                window.notifications.show('Error deleting property', 'error');
+            }
         }
     };
 
     // --- Dashboard Stats (for index.html) ---
-    function updateDashboardStats() {
-        const customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
-
-        // Count elements
+    async function updateDashboardStats() {
         const totalPropEl = document.getElementById('stat-total-props');
         const pendingPropEl = document.getElementById('stat-pending-props');
-        const activePropEl = document.getElementById('stat-active-props');
 
-        if (totalPropEl) {
-            // Base static properties (4) + custom
-            totalPropEl.textContent = 4 + customProps.length;
-        }
-        if (pendingPropEl) {
-            const pendingCount = customProps.filter(p => p.status === 'pending').length;
-            pendingPropEl.textContent = pendingCount;
+        try {
+            const properties = await window.api.getProperties();
+            if (totalPropEl) totalPropEl.textContent = properties.length;
+            if (pendingPropEl) {
+                const pendingCount = properties.filter(p => !p.verified).length;
+                pendingPropEl.textContent = pendingCount;
+            }
+        } catch (err) {
+            console.error('Failed to update stats:', err);
         }
     }
 
@@ -105,36 +104,129 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDashboardStats();
     }
 
-    // --- Add Property Form (admin/add-property.html) ---
+    // --- Appointment Management (for appointments.html) ---
+    const appointmentsTable = document.getElementById('appointments-table');
+    if (appointmentsTable) {
+        renderAppointments();
+    }
+
+    async function renderAppointments() {
+        const tbody = appointmentsTable.querySelector('tbody');
+        try {
+            const appointments = await window.api.getAppointments();
+
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No appointment requests found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appointments.map(app => `
+                <tr>
+                    <td><strong>${new Date(app.createdAt).toLocaleDateString()}</strong><br><span style="font-size: 0.8rem; color: #888;">${new Date(app.createdAt).toLocaleTimeString()}</span></td>
+                    <td>${app.name}<br><span style="font-size: 0.8rem; color: #888;">${app.phone}</span></td>
+                    <td>${app.propertyId ? 'Property: ' + app.propertyId.slice(-6) : 'General Enquiry'}</td>
+                    <td><span style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Enquiry</span></td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td>
+                        <button class="action-icon-btn approve" title="Confirm" onclick="alert('Feature coming soon')"><i class="ri-check-line"></i></button>
+                        <button class="action-icon-btn delete" title="Cancel" onclick="deleteAppointment('${app._id}')"><i class="ri-close-line"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error('Failed to load appointments:', err);
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: red;">Error loading appointments.</td></tr>';
+        }
+    }
+
+    window.deleteAppointment = async (id) => {
+        if (confirm('Are you sure you want to cancel this appointment?')) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'x-auth-token': window.api.getToken() }
+                });
+                if (response.ok) {
+                    window.notifications.show('Appointment cancelled', 'success');
+                    renderAppointments();
+                } else {
+                    window.notifications.show('Failed to delete appointment', 'error');
+                }
+            } catch (err) {
+                window.notifications.show('Error deleting appointment', 'error');
+            }
+        }
+    };
+
+    // --- Add/Edit Property Form (admin/add-property.html) ---
     const addPropertyForm = document.getElementById('add-property-form');
     if (addPropertyForm) {
-        addPropertyForm.addEventListener('submit', (e) => {
+        // Check if editing
+        const urlParams = new URLSearchParams(window.location.search);
+        const editId = urlParams.get('id');
+
+        if (editId) {
+            document.querySelector('.page-title h2').textContent = 'Edit Property';
+            const prop = await window.api.getProperty(editId);
+            if (prop) {
+                document.getElementById('prop-title').value = prop.title;
+                document.getElementById('prop-category').value = prop.category;
+                document.getElementById('prop-price').value = prop.price;
+                document.getElementById('prop-location').value = prop.location;
+                document.getElementById('prop-type').value = prop.type;
+                document.getElementById('prop-area').value = prop.area;
+                document.getElementById('prop-status').value = prop.status;
+                document.getElementById('prop-desc').value = prop.description;
+            }
+        }
+
+        addPropertyForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const submitBtn = addPropertyForm.querySelector('button[type="submit"]');
-            submitBtn.innerText = 'Publishing...';
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Processing...';
             submitBtn.disabled = true;
 
-            const newProp = {
-                id: Date.now(),
-                title: document.getElementById('prop-title').value,
-                category: document.getElementById('prop-category').value,
-                price: document.getElementById('prop-price').value,
-                location: document.getElementById('prop-location').value,
-                status: 'active', // Direct admin posts are active
-                verified: true,
-                date: new Date().toLocaleDateString('en-IN'),
-                image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
-            };
+            const formData = new FormData();
+            formData.append('title', document.getElementById('prop-title').value);
+            formData.append('category', document.getElementById('prop-category').value);
+            formData.append('price', document.getElementById('prop-price').value);
+            formData.append('location', document.getElementById('prop-location').value);
+            formData.append('type', document.getElementById('prop-type').value);
+            formData.append('area', document.getElementById('prop-area').value);
+            formData.append('status', document.getElementById('prop-status').value);
+            formData.append('description', document.getElementById('prop-desc').value);
+            formData.append('verified', true);
 
-            let customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
-            customProps.push(newProp);
-            localStorage.setItem('rld_custom_properties', JSON.stringify(customProps));
+            const imageFile = document.getElementById('prop-image').files[0];
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
 
-            setTimeout(() => {
-                alert('Property published successfully!');
-                window.location.href = 'properties.html';
-            }, 1000);
+            try {
+                const method = editId ? 'PUT' : 'POST';
+                const url = editId ? `http://localhost:5000/api/properties/${editId}` : 'http://localhost:5000/api/properties';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'x-auth-token': window.api.getToken() },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.notifications.show(`Property ${editId ? 'updated' : 'published'} successfully!`, 'success');
+                    setTimeout(() => window.location.href = 'properties.html', 1500);
+                } else {
+                    window.notifications.show('Failed to save property', 'error');
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                window.notifications.show('Error saving property', 'error');
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
         });
     }
 });

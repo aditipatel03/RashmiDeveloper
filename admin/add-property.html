@@ -79,15 +79,37 @@
 
             <div class="form-group">
                 <label class="admin-label">Description</label>
-                <textarea class="admin-input" rows="4" placeholder="Detailed description of the property..."></textarea>
+                <textarea id="prop-desc" class="admin-input" rows="4"
+                    placeholder="Detailed description of the property..."></textarea>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-col">
+                    <label class="admin-label">Type (e.g. 2 BHK)</label>
+                    <input type="text" id="prop-type" class="admin-input" placeholder="e.g. 2 BHK Apartment" required>
+                </div>
+                <div class="form-col">
+                    <label class="admin-label">Area (sqft)</label>
+                    <input type="text" id="prop-area" class="admin-input" placeholder="e.g. 1200 sqft" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="admin-label">Availability Status</label>
+                <select id="prop-status" class="admin-input">
+                    <option>Ready to Move</option>
+                    <option>Under Construction</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label class="admin-label">Property Images</label>
-                <div
+                <div onclick="document.getElementById('prop-image').click()"
                     style="border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer;">
                     <i class="ri-cloud-upload-line" style="font-size: 2rem; color: var(--admin-gold);"></i>
-                    <p style="margin-top: 10px; color: #777;">Click to upload images</p>
+                    <p style="margin-top: 10px; color: #777;" id="upload-status">Click to upload images</p>
+                    <input type="file" id="prop-image" style="display: none;" accept="image/*"
+                        onchange="document.getElementById('upload-status').innerText = this.files[0].name">
                 </div>
             </div>
 
@@ -98,6 +120,8 @@
             </div>
         </form>
     </main>
+    <script src="../js/api.js"></script>
+    <script src="../js/notifications.js"></script>
     <script src="../js/admin.js"></script>
 </body>
 

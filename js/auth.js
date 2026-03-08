@@ -1,64 +1,74 @@
-// Auth Page Logic (Mock)
+// Auth Page Logic
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // Login Form Handler
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const email = loginForm.querySelector('input[type="email"]').value;
+            const password = loginForm.querySelector('input[type="password"]').value;
             const btn = loginForm.querySelector('button');
             const originalText = btn.innerHTML;
 
             // Loading State
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Logging in...';
-            btn.style.opacity = '0.8';
+            btn.disabled = true;
 
-            setTimeout(() => {
-                alert('Login Successful! Welcome back.');
-                // Simulate logged in state (In real app, set token)
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userName', 'Demo User');
-                window.location.href = 'userdashboard/index.html';
-            }, 1500);
+            try {
+                const result = await window.api.login(email, password);
+                if (result.token) {
+                    window.notifications.show('Login Successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'admin/index.html';
+                    }, 1000);
+                } else {
+                    window.notifications.show(result.msg || 'Invalid credentials', 'error');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                window.notifications.show('Connection error. Is the server running?', 'error');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         });
     }
 
     // Register Form Handler
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const name = registerForm.querySelector('input[placeholder="Full Name"]').value;
+            const email = registerForm.querySelector('input[type="email"]').value;
+            const password = registerForm.querySelector('input[type="password"]').value;
             const btn = registerForm.querySelector('button');
 
-            // Loading State
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Creating Account...';
-            btn.style.opacity = '0.8';
+            btn.disabled = true;
 
-            setTimeout(() => {
-                alert('Account Created Successfully! Please Log In.');
-                window.location.href = 'login.html';
-            }, 1500);
+            try {
+                const response = await fetch('http://localhost:5000/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    window.notifications.show('Account Created Successfully! Please Log In.', 'success');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                } else {
+                    window.notifications.show(result.msg || 'Registration failed', 'error');
+                    btn.innerHTML = 'Sign Up';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                window.notifications.show('Error connecting to server', 'error');
+                btn.innerHTML = 'Sign Up';
+                btn.disabled = false;
+            }
         });
     }
-
-    // Forgot Password Handler
-    const forgotForm = document.getElementById('forgotForm');
-    if (forgotForm) {
-        forgotForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = forgotForm.querySelector('button');
-
-            // Loading State
-            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Sending...';
-            btn.style.opacity = '0.8';
-
-            setTimeout(() => {
-                alert('Reset instructions sent to your email.');
-                btn.innerHTML = 'Sent <i class="ri-check-line"></i>';
-                btn.style.backgroundColor = 'var(--success)';
-            }, 1500);
-        });
-    }
-
 });

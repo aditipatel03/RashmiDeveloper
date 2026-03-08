@@ -1,30 +1,41 @@
-// properties is now global
-
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('properties-grid');
     const countSpan = document.getElementById('count');
     const applyBtn = document.getElementById('apply-filters');
+    const sortSelect = document.getElementById('sort-by');
+    const priceSlider = document.getElementById('price-slider');
+    const priceReadout = document.getElementById('price-readout');
+
+    let allProperties = [];
 
     // Function to render properties
     function renderProperties(data) {
+        if (!grid) return;
+
+        if (data.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><h3>No properties found matching your criteria.</h3></div>';
+            countSpan.textContent = 0;
+            return;
+        }
+
         grid.innerHTML = data.map(prop => `
             <div class="project-card">
                 <div class="project-img">
                     <span class="badge-verified">${prop.brokerage === 0 ? '0% Brokerage' : ''}</span>
-                    <img src="${prop.image}" alt="${prop.title}">
-                    <div class="price-tag">₹${prop.price}</div>
+                    <img src="${prop.image.startsWith('/') ? 'http://localhost:5000' + prop.image : prop.image}" alt="${prop.title}">
+                    <div class="price-tag">₹${prop.price}${prop.price.includes('Cr') || prop.price.includes('L') ? '' : ' L'}+</div>
                 </div>
                 <div class="project-info">
                     <div class="badge-verified" style="display:inline-block; margin-bottom:10px;">Rashmi Verified</div>
                     <h3>${prop.title}</h3>
                     <p><i class="ri-map-pin-line"></i> ${prop.location}</p>
                     <div class="project-meta">
-                        <span><i class="ri-layout-grid-line"></i> ${prop.type}</span>
+                        <span><i class="ri-layout-grid-line"></i> ${prop.type.split(' ')[0]}</span>
                         <span><i class="ri-ruler-2-line"></i> ${prop.area}</span>
                     </div>
                     <div class="project-actions">
-                        <a href="property-detail.html?id=${prop.id}" class="btn btn-outline">View Details <i class="ri-arrow-right-line"></i></a>
-                        <button class="btn btn-primary"><i class="ri-whatsapp-line"></i> Chat</button>
+                        <a href="property-detail.html?id=${prop._id}" class="btn btn-outline">View Details <i class="ri-arrow-right-line"></i></a>
+                        <button class="btn btn-primary" onclick="window.open('https://wa.me/917262993832?text=I am interested in ${prop.title}')"><i class="ri-whatsapp-line"></i> Chat</button>
                     </div>
                 </div>
             </div>
@@ -32,47 +43,54 @@ document.addEventListener('DOMContentLoaded', () => {
         countSpan.textContent = data.length;
     }
 
-    // --- Dynamic Data Sync ---
-    // Fetch custom properties from localStorage (only approved ones)
-    const customProps = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
-    const approvedProps = customProps.filter(p => p.status === 'active');
-
-    // Merge with static properties from data.js
-    const allProperties = [...properties, ...approvedProps];
-
-    // Initial Render
-    renderProperties(allProperties);
+    // Handle data loaded event
+    document.addEventListener('propertiesLoaded', (e) => {
+        allProperties = e.detail;
+        applyFilters();
+    });
 
     // Sorting Logic
-    const sortSelect = document.getElementById('sort-by');
-
     function sortProperties(data, criteria) {
         let sorted = [...data];
+        const getPriceValue = (p) => {
+            let price = p.price.toString().toLowerCase().replace(/,/g, '');
+            if (price.includes('cr')) return parseFloat(price) * 10000000;
+            if (price.includes('l')) return parseFloat(price) * 100000;
+            return parseFloat(price) || 0;
+        };
+
         if (criteria === 'price-low') {
-            sorted.sort((a, b) => parseInt(a.price.replace(/,/g, '')) - parseInt(b.price.replace(/,/g, '')));
+            sorted.sort((a, b) => getPriceValue(a) - getPriceValue(b));
         } else if (criteria === 'price-high') {
-            sorted.sort((a, b) => parseInt(b.price.replace(/,/g, '')) - parseInt(a.price.replace(/,/g, '')));
+            sorted.sort((a, b) => getPriceValue(b) - getPriceValue(a));
         } else if (criteria === 'newest') {
-            sorted.sort((a, b) => b.id - a.id);
+            sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
         return sorted;
     }
 
-    sortSelect.addEventListener('change', () => {
-        applyFilters();
-    });
+    sortSelect?.addEventListener('change', applyFilters);
 
     function applyFilters() {
+        if (allProperties.length === 0) return;
+
         const selectedTypes = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(cb => cb.value);
         const selectedLocation = document.getElementById('location-filter').value;
-        const maxPrice = parseInt(priceSlider.value);
-        const sortCriteria = sortSelect.value;
+        const maxPrice = priceSlider ? parseInt(priceSlider.value) : Infinity;
+        const sortCriteria = sortSelect ? sortSelect.value : 'newest';
 
         let filtered = allProperties.filter(p => {
             const matchType = selectedTypes.length === 0 || selectedTypes.includes(p.category);
             const matchLoc = !selectedLocation || p.location.includes(selectedLocation);
 
-            const priceNum = parseInt(p.price.toString().replace(/,/g, ''));
+            const getPriceValue = (priceStr) => {
+                let p = priceStr.toString().toLowerCase().replace(/,/g, '');
+                if (p.includes('cr')) return parseFloat(p) * 10000000;
+                if (p.includes('l')) return parseFloat(p) * 100000;
+                return parseFloat(p) || 0;
+            };
+
+            const priceNum = getPriceValue(p.price);
             const matchPrice = priceNum <= maxPrice;
 
             return matchType && matchLoc && matchPrice;
@@ -83,9 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Price Slider Logic
-    const priceSlider = document.getElementById('price-slider');
-    const priceReadout = document.getElementById('price-readout');
-
     function formatPrice(value) {
         if (value >= 10000000) {
             return `₹ ${(value / 10000000).toFixed(1)} Cr`;
@@ -94,20 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    priceSlider.addEventListener('input', (e) => {
-        priceReadout.textContent = formatPrice(e.target.value);
-        applyFilters(); // Live filtering on drag
+    priceSlider?.addEventListener('input', (e) => {
+        if (priceReadout) priceReadout.textContent = formatPrice(e.target.value);
+        applyFilters();
     });
 
-    // Auto-apply filters when type or location changes
+    // Event listeners for filters
     document.querySelectorAll('input[name="type"]').forEach(input => {
         input.addEventListener('change', applyFilters);
     });
-    document.getElementById('location-filter').addEventListener('change', applyFilters);
-
-    // Initial Filter Apply
-    applyFilters();
-
-    // Filter Logic Button (Legacy support or explicit click)
-    applyBtn.addEventListener('click', applyFilters);
+    document.getElementById('location-filter')?.addEventListener('change', applyFilters);
+    applyBtn?.addEventListener('click', applyFilters);
 });
