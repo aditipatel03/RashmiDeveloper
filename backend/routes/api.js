@@ -23,8 +23,8 @@ router.post('/track-visit', userController.trackVisit);
 // Property Routes
 router.get('/properties', propertyController.getProperties);
 router.get('/properties/:id', propertyController.getProperty);
-router.post('/properties', auth, upload.single('image'), propertyController.createProperty);
-router.put('/properties/:id', auth, upload.single('image'), propertyController.updateProperty);
+router.post('/properties', auth, upload.array('images', 10), propertyController.createProperty);
+router.put('/properties/:id', auth, upload.array('images', 10), propertyController.updateProperty);
 router.delete('/properties/:id', auth, propertyController.deleteProperty);
 router.post('/properties/:id/restore', auth, propertyController.restoreProperty);
 

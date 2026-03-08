@@ -32,24 +32,29 @@ exports.getProperty = async (req, res) => {
 
 exports.createProperty = async (req, res) => {
     try {
-        let imageUrl = '';
-        if (req.file) {
-            const fileName = `${Date.now()}-${req.file.originalname}`;
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('property-images')
-                .upload(fileName, req.file.buffer, {
-                    contentType: req.file.mimetype,
-                    upsert: true
-                });
+        let imageUrls = [];
+        if (req.files && req.files.length > 0) {
+            for (const file of req.files) {
+                const fileName = `${Date.now()}-${file.originalname}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('property-images')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: true
+                    });
 
-            if (uploadError) throw uploadError;
+                if (uploadError) throw uploadError;
 
-            const { data: publicUrlData } = supabase.storage
-                .from('property-images')
-                .getPublicUrl(fileName);
+                const { data: publicUrlData } = supabase.storage
+                    .from('property-images')
+                    .getPublicUrl(fileName);
 
-            imageUrl = publicUrlData.publicUrl;
+                imageUrls.push(publicUrlData.publicUrl);
+            }
         }
+
+        const thumbnailIndex = parseInt(req.body.thumbnailIndex) || 0;
+        const mainImage = imageUrls.length > 0 ? (imageUrls[thumbnailIndex] || imageUrls[0]) : '';
 
         const propertyData = {
             title: req.body.title,
@@ -60,7 +65,9 @@ exports.createProperty = async (req, res) => {
             area: req.body.area,
             status: req.body.status,
             description: req.body.description,
-            image: imageUrl,
+            image: mainImage,
+            images: imageUrls,
+            thumbnail_index: thumbnailIndex,
             verified: req.body.verified === 'true' || req.body.verified === true,
             featured: req.body.featured === 'true' || req.body.featured === true,
             brokerage: parseFloat(req.body.brokerage) || 0,
@@ -102,25 +109,41 @@ exports.updateProperty = async (req, res) => {
             rera: req.body.rera,
             floor: req.body.floor,
             facing: req.body.facing,
-            furnishing: req.body.furnishing
+            furnishing: req.body.furnishing,
+            thumbnail_index: req.body.thumbnailIndex ? parseInt(req.body.thumbnailIndex) : undefined
         };
 
-        if (req.file) {
-            const fileName = `${Date.now()}-${req.file.originalname}`;
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('property-images')
-                .upload(fileName, req.file.buffer, {
-                    contentType: req.file.mimetype,
-                    upsert: true
-                });
+        let currentImageUrls = [];
+        if (req.body.existingImages) {
+            currentImageUrls = typeof req.body.existingImages === 'string' ? JSON.parse(req.body.existingImages) : req.body.existingImages;
+        }
 
-            if (uploadError) throw uploadError;
+        if (req.files && req.files.length > 0) {
+            const newImageUrls = [];
+            for (const file of req.files) {
+                const fileName = `${Date.now()}-${file.originalname}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('property-images')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: true
+                    });
 
-            const { data: publicUrlData } = supabase.storage
-                .from('property-images')
-                .getPublicUrl(fileName);
+                if (uploadError) throw uploadError;
 
-            updateData.image = publicUrlData.publicUrl;
+                const { data: publicUrlData } = supabase.storage
+                    .from('property-images')
+                    .getPublicUrl(fileName);
+
+                newImageUrls.push(publicUrlData.publicUrl);
+            }
+            currentImageUrls = [...currentImageUrls, ...newImageUrls];
+        }
+
+        if (currentImageUrls.length > 0) {
+            updateData.images = currentImageUrls;
+            const tIndex = updateData.thumbnail_index !== undefined ? updateData.thumbnail_index : 0;
+            updateData.image = currentImageUrls[tIndex] || currentImageUrls[0];
         }
 
         if (req.body.amenities) {

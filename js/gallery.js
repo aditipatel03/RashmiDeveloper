@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const imageUrl = prop.image;
+        const allImages = prop.images && prop.images.length > 0 ? prop.images : [prop.image];
+        const mainImageUrl = allImages[prop.thumbnail_index || 0] || allImages[0];
 
         // Build Detail Page
         detailContainer.innerHTML = `
@@ -26,14 +27,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="gallery-section">
                     <div class="main-gallery">
                         <button class="gallery-nav prev"><i class="ri-arrow-left-s-line"></i></button>
-                        <img src="${imageUrl}" class="main-img" id="main-gallery-img">
+                        <img src="${mainImageUrl}" class="main-img" id="main-gallery-img">
                         <button class="gallery-nav next"><i class="ri-arrow-right-s-line"></i></button>
                     </div>
                     <div class="thumbnails">
-                        <img src="${imageUrl}" class="active">
-                        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800">
-                        <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800">
-                        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800">
+                        ${allImages.map((src, i) => `<img src="${src}" class="${i === (prop.thumbnail_index || 0) ? 'active' : ''}">`).join('')}
                     </div>
                 </div>
 
@@ -155,13 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const thumbs = document.querySelectorAll('.thumbnails img');
         const prevBtn = document.querySelector('.gallery-nav.prev');
         const nextBtn = document.querySelector('.gallery-nav.next');
-        let currentIndex = 0;
-
-        const allImages = [imageUrl,
-            "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800",
-            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800",
-            "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"
-        ];
+        let currentIndex = prop.thumbnail_index || 0;
 
         function updateGallery(index) {
             currentIndex = index;

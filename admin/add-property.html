@@ -60,11 +60,7 @@
             <div class="form-grid-2">
                 <div class="form-col">
                     <label class="admin-label">Location</label>
-                    <select id="prop-location" class="admin-input">
-                        <option>Raigad</option>
-                        <option>Pali</option>
-                        <option>Mangao</option>
-                    </select>
+                    <input type="text" id="prop-location" class="admin-input" placeholder="e.g. Raigad, Pali" required>
                 </div>
                 <div class="form-col">
                     <label class="admin-label">Category</label>
@@ -141,13 +137,16 @@
             </div>
 
             <div class="form-group">
-                <label class="admin-label">Property Images</label>
-                <div onclick="document.getElementById('prop-image').click()"
-                    style="border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer;">
+                <label class="admin-label">Property Images (Select multiple, click on one to set as Thumbnail)</label>
+                <div id="image-upload-area" onclick="document.getElementById('prop-image').click()"
+                    style="border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">
                     <i class="ri-cloud-upload-line" style="font-size: 2rem; color: var(--admin-gold);"></i>
-                    <p style="margin-top: 10px; color: #777;" id="upload-status">Click to upload images</p>
-                    <input type="file" id="prop-image" style="display: none;" accept="image/*"
-                        onchange="document.getElementById('upload-status').innerText = this.files[0].name">
+                    <p style="margin-top: 10px; color: #777;" id="upload-status">Click to upload images (Max 10)</p>
+                    <input type="file" id="prop-image" style="display: none;" accept="image/*" multiple>
+                </div>
+                <div id="image-previews"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <!-- Previews will be injected here -->
                 </div>
             </div>
 
