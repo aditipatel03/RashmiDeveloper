@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check Authentication
     const token = window.api.getToken();
     if (!token && !window.location.pathname.includes('login.html')) {
-        // window.location.href = '../login.html'; // Assuming login is in root
+        window.location.href = '../login.html';
     }
 
     // Sidebar Navigation Highlighting
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const properties = await window.api.getProperties();
 
-            if (properties.length === 0) {
+            if (!properties || properties.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No properties found in database.</td></tr>';
                 return;
             }
@@ -36,10 +36,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <tr>
                     <td>
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="${prop.image.startsWith('/') ? 'http://localhost:5000' + prop.image : prop.image}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                            <img src="${prop.image}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
                             <div>
                                 <strong style="display: block;">${prop.title}</strong>
-                                <span style="font-size: 0.8rem; color: #888;">ID: #${prop._id.toString().slice(-6)}</span>
+                                <span style="font-size: 0.8rem; color: #888;">ID: #${prop.id?.toString().slice(-6)}</span>
                             </div>
                         </div>
                     </td>
@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td><span class="status-badge status-${prop.status === 'Ready to Move' ? 'active' : 'pending'}">${prop.status}</span></td>
                     <td>
                         <div style="display: flex; gap: 5px;">
-                            <button class="action-icon-btn edit" onclick="window.location.href='add-property.html?id=${prop._id}'"><i class="ri-edit-line"></i></button>
-                            <button class="action-icon-btn delete" onclick="deleteProperty('${prop._id}')" title="Delete Listing">
+                            <button class="action-icon-btn edit" onclick="window.location.href='add-property.html?id=${prop.id}'"><i class="ri-edit-line"></i></button>
+                            <button class="action-icon-btn delete" onclick="deleteProperty('${prop.id}')" title="Delete Listing">
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                         </div>
@@ -66,11 +66,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.deleteProperty = async (id) => {
         if (confirm('Are you sure you want to delete this property?')) {
             try {
-                const response = await fetch(`http://localhost:5000/api/properties/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'x-auth-token': window.api.getToken() }
-                });
-                if (response.ok) {
+                const response = await window.api.deleteProperty(id);
+                if (response) {
                     window.notifications.show('Property deleted successfully', 'success');
                     renderAdminProperties();
                     updateDashboardStats();
@@ -115,21 +112,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const appointments = await window.api.getAppointments();
 
-            if (appointments.length === 0) {
+            if (!appointments || appointments.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No appointment requests found.</td></tr>';
                 return;
             }
 
             tbody.innerHTML = appointments.map(app => `
                 <tr>
-                    <td><strong>${new Date(app.createdAt).toLocaleDateString()}</strong><br><span style="font-size: 0.8rem; color: #888;">${new Date(app.createdAt).toLocaleTimeString()}</span></td>
+                    <td><strong>${new Date(app.created_at).toLocaleDateString()}</strong><br><span style="font-size: 0.8rem; color: #888;">${new Date(app.created_at).toLocaleTimeString()}</span></td>
                     <td>${app.name}<br><span style="font-size: 0.8rem; color: #888;">${app.phone}</span></td>
-                    <td>${app.propertyId ? 'Property: ' + app.propertyId.slice(-6) : 'General Enquiry'}</td>
+                    <td>${app.property_id ? 'Property: ' + app.property_id.slice(-6) : 'General Enquiry'}</td>
                     <td><span style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Enquiry</span></td>
                     <td><span class="status-badge status-pending">Pending</span></td>
                     <td>
                         <button class="action-icon-btn approve" title="Confirm" onclick="alert('Feature coming soon')"><i class="ri-check-line"></i></button>
-                        <button class="action-icon-btn delete" title="Cancel" onclick="deleteAppointment('${app._id}')"><i class="ri-close-line"></i></button>
+                        <button class="action-icon-btn delete" title="Cancel" onclick="deleteAppointment('${app.id}')"><i class="ri-close-line"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -142,11 +139,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.deleteAppointment = async (id) => {
         if (confirm('Are you sure you want to cancel this appointment?')) {
             try {
-                const response = await fetch(`http://localhost:5000/api/appointments/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'x-auth-token': window.api.getToken() }
-                });
-                if (response.ok) {
+                const response = await window.api.deleteAppointment(id);
+                if (response) {
                     window.notifications.show('Appointment cancelled', 'success');
                     renderAppointments();
                 } else {
@@ -205,20 +199,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             try {
-                const method = editId ? 'PUT' : 'POST';
-                const url = editId ? `http://localhost:5000/api/properties/${editId}` : 'http://localhost:5000/api/properties';
+                const response = editId
+                    ? await window.api.updateProperty(editId, formData)
+                    : await window.api.addProperty(formData);
 
-                const response = await fetch(url, {
-                    method: method,
-                    headers: { 'x-auth-token': window.api.getToken() },
-                    body: formData
-                });
-
-                if (response.ok) {
+                if (response && !response.msg) {
                     window.notifications.show(`Property ${editId ? 'updated' : 'published'} successfully!`, 'success');
                     setTimeout(() => window.location.href = 'properties.html', 1500);
                 } else {
-                    window.notifications.show('Failed to save property', 'error');
+                    window.notifications.show(response.msg || 'Failed to save property', 'error');
                     submitBtn.innerText = originalText;
                     submitBtn.disabled = false;
                 }

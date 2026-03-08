@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const imageUrl = prop.image.startsWith('/') ? 'http://localhost:5000' + prop.image : prop.image;
+        const imageUrl = prop.image;
 
         // Build Detail Page
         detailContainer.innerHTML = `
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="amenities-box">
                     <h3 class="section-title">Modern Amenities</h3>
                     <div class="amenities-badge-grid">
-                        ${prop.amenities.map(a => `<div class="amenity-badge"><i class="ri-check-double-line"></i> ${a}</div>`).join('')}
+                        ${prop.amenities ? prop.amenities.map(a => `<div class="amenity-badge"><i class="ri-check-double-line"></i> ${a}</div>`).join('') : ''}
                     </div>
                 </div>
             </div>
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 name: document.getElementById('enquiry-name').value,
                 phone: document.getElementById('enquiry-phone').value,
                 email: 'direct-enquiry@rld.com', // Default placeholder
-                propertyId: prop._id,
+                property_id: prop.id,
                 message: `Enquiry for ${prop.title}`
             };
 

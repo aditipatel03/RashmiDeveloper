@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderProperties(data) {
         if (!grid) return;
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><h3>No properties found matching your criteria.</h3></div>';
             countSpan.textContent = 0;
             return;
@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="project-card">
                 <div class="project-img">
                     <span class="badge-verified">${prop.brokerage === 0 ? '0% Brokerage' : ''}</span>
-                    <img src="${prop.image.startsWith('/') ? 'http://localhost:5000' + prop.image : prop.image}" alt="${prop.title}">
-                    <div class="price-tag">₹${prop.price}${prop.price.includes('Cr') || prop.price.includes('L') ? '' : ' L'}+</div>
+                    <img src="${prop.image}" alt="${prop.title}">
+                    <div class="price-tag">₹${prop.price}${prop.price.toString().includes('Cr') || prop.price.toString().includes('L') ? '' : ' L'}+</div>
                 </div>
                 <div class="project-info">
                     <div class="badge-verified" style="display:inline-block; margin-bottom:10px;">Rashmi Verified</div>
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span><i class="ri-ruler-2-line"></i> ${prop.area}</span>
                     </div>
                     <div class="project-actions">
-                        <a href="property-detail.html?id=${prop._id}" class="btn btn-outline">View Details <i class="ri-arrow-right-line"></i></a>
+                        <a href="property-detail.html?id=${prop.id}" class="btn btn-outline">View Details <i class="ri-arrow-right-line"></i></a>
                         <button class="btn btn-primary" onclick="window.open('https://wa.me/917262993832?text=I am interested in ${prop.title}')"><i class="ri-whatsapp-line"></i> Chat</button>
                     </div>
                 </div>
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (criteria === 'price-high') {
             sorted.sort((a, b) => getPriceValue(b) - getPriceValue(a));
         } else if (criteria === 'newest') {
-            sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         }
         return sorted;
     }

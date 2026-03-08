@@ -50,13 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             try {
-                const response = await fetch('http://localhost:5000/api/users/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
-                });
-                const result = await response.json();
-                if (response.ok) {
+                const result = await window.api.register({ name, email, password });
+                if (result.token || result.msg === 'User Registered') {
                     window.notifications.show('Account Created Successfully! Please Log In.', 'success');
                     setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {
