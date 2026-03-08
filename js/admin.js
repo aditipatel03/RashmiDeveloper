@@ -216,6 +216,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('prop-facing').value = prop.facing;
                 document.getElementById('prop-furnishing').value = prop.furnishing;
 
+                // Set Amenities
+                const amenityChecks = document.querySelectorAll('input[name="amenity"]');
+                const propAmenities = prop.amenities || [];
+                amenityChecks.forEach(check => {
+                    check.checked = propAmenities.includes(check.value);
+                });
+
                 existingImages = prop.images || (prop.image ? [prop.image] : []);
                 thumbnailIndex = prop.thumbnail_index || 0;
                 renderPreviews();
@@ -333,6 +340,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('floor', document.getElementById('prop-floor').value);
             formData.append('facing', document.getElementById('prop-facing').value);
             formData.append('furnishing', document.getElementById('prop-furnishing').value);
+
+            // Collect Amenities
+            const selectedAmenities = Array.from(document.querySelectorAll('input[name="amenity"]:checked')).map(cb => cb.value);
+            formData.append('amenities', JSON.stringify(selectedAmenities));
+
             formData.append('thumbnailIndex', thumbnailIndex);
 
             selectedFiles.forEach(file => formData.append('images', file));

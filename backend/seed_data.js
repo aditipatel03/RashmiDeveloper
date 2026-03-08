@@ -1,0 +1,235 @@
+const { supabase } = require('./config/supabase');
+
+const properties = [
+    {
+        title: "Luxury 2BHK Apartment",
+        type: "2 BHK Apartment",
+        category: "Apartment",
+        price: "55 L",
+        location: "Pali, Raigad",
+        area: "1100 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Exquisite 2BHK with modern finishes and a scenic view of the Sudhagad hills. Features high-quality flooring and a spacious balcony.",
+        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Swimming Pool", "Gymnasium", "24/7 Security", "Power Backup"],
+        rera: "P51700012345",
+        floor: "5th of 7 Floors",
+        facing: "East",
+        furnishing: "Semi-Furnished",
+        verified: true,
+        featured: true,
+        brokerage: 0
+    },
+    {
+        title: "Coastal Breeze Villa",
+        type: "4 BHK Villa",
+        category: "Villa / Bungalow",
+        price: "2.5 Cr",
+        location: "Mangao, Raigad",
+        area: "3500 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Spacious independent villa with private garden and swimming pool. Perfect for a luxurious weekend getaway or permanent residence.",
+        image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Swimming Pool", "Gymnasium", "Club House", "Landscape Garden"],
+        rera: "P51700067890",
+        floor: "G+1",
+        facing: "West",
+        furnishing: "Fully Furnished",
+        verified: true,
+        featured: true,
+        brokerage: 0
+    },
+    {
+        title: "Sudhagad View Plots",
+        type: "N.A. Plot",
+        category: "Plot",
+        price: "12 L",
+        location: "Pali Bazarpeth, Pali",
+        area: "2000 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Clear title N.A. plot in a gated community. Ideal for building your dream farmhouse. Walking distance from the main market.",
+        image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["24/7 Security", "Drainage System", "Electricity Connection", "Water Supply"],
+        rera: "P51700011223",
+        floor: "N/A",
+        facing: "North",
+        furnishing: "Unfurnished",
+        verified: true,
+        featured: false,
+        brokerage: 0
+    },
+    {
+        title: "Modern 3BHK Bunglow",
+        type: "3 BHK Bunglow",
+        category: "Villa / Bungalow",
+        price: "85 L",
+        location: "Raigad",
+        area: "2200 sqft",
+        status: "Active",
+        availability: "Under Construction",
+        description: "Elegant 3BHK Bunglow with modern architecture and large windows for natural light. Located in a fast-developing neighborhood.",
+        image: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1592595825316-3918a09f87c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Power Backup", "Rain Water Harvesting", "Landscape Garden", "Club House"],
+        rera: "P51700044556",
+        floor: "Ground Floor",
+        facing: "South",
+        furnishing: "Unfurnished",
+        verified: true,
+        featured: true,
+        brokerage: 0
+    },
+    {
+        title: "Green Valley Farmhouse",
+        type: "2 BHK Farmhouse",
+        category: "Villa / Bungalow",
+        price: "65 L",
+        location: "Mangao",
+        area: "1.5 Acre",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "A beautiful farmhouse surrounded by organic fruit trees. Perfect for those looking to live a quiet life close to nature.",
+        image: "https://images.unsplash.com/photo-1464316325542-53b836617ee7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1464316325542-53b836617ee7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Solar Water Heater", "Rain Water Harvesting", "Landscape Garden"],
+        rera: "N/A",
+        floor: "Ground Floor",
+        facing: "East",
+        furnishing: "Semi-Furnished",
+        verified: true,
+        featured: false,
+        brokerage: 0
+    },
+    {
+        title: "Pali Smart City Apartment",
+        type: "1 BHK Apartment",
+        category: "Apartment",
+        price: "32 L",
+        location: "Pali",
+        area: "650 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Affordable and smart 1BHK apartment in the heart of Pali. Close to schools, hospitals, and the bus depot.",
+        image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Children's Play Area", "24/7 Security", "Jogging Track"],
+        rera: "P51700099887",
+        floor: "2nd of 4 Floors",
+        facing: "West",
+        furnishing: "Unfurnished",
+        verified: true,
+        featured: false,
+        brokerage: 0
+    },
+    {
+        title: "Riverside Commercial Plot",
+        type: "Commercial Plot",
+        category: "Plot",
+        price: "1.2 Cr",
+        location: "Raigad Highway",
+        area: "5000 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Strategic location on the main highway, ideal for hotels, showrooms, or small warehouses. High visibility and excellent connectivity.",
+        image: "https://images.unsplash.com/photo-1590674899484-142279147d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1590674899484-142279147d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["24/7 Security", "Power Backup", "Wide Internal Roads"],
+        rera: "N/A",
+        floor: "N/A",
+        facing: "North-East",
+        furnishing: "Unfurnished",
+        verified: true,
+        featured: true,
+        brokerage: 0
+    },
+    {
+        title: "Hillview Studio Apartment",
+        type: "Studio",
+        category: "Apartment",
+        price: "22 L",
+        location: "Mangao",
+        area: "450 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Cozy studio apartment with a dedicated workspace. Perfect for bachelor living or as a low-investment rental property.",
+        image: "https://images.unsplash.com/photo-1630694093867-4b947d812bf0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1630694093867-4b947d812bf0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Gymnasium", "Power Backup", "24/7 Security"],
+        rera: "P51700044332",
+        floor: "3rd of 5 Floors",
+        facing: "South",
+        furnishing: "Semi-Furnished",
+        verified: true,
+        featured: false,
+        brokerage: 0
+    },
+    {
+        title: "Palm Breeze Residency",
+        type: "2.5 BHK",
+        category: "Apartment",
+        price: "72 L",
+        location: "Raigad Central",
+        area: "1350 sqft",
+        status: "Active",
+        availability: "Under Construction",
+        description: "High-end residential complex with modern club house and multiple leisure facilities. Early bird offers currently available.",
+        image: "https://images.unsplash.com/photo-1560448194-635e8082695c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1560448194-635e8082695c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Club House", "Children's Play Area", "Swimming Pool", "Gymnasium", "landscape Garden"],
+        rera: "P51700088776",
+        floor: "8th of 12 Floors",
+        facing: "East",
+        furnishing: "Unfurnished",
+        verified: true,
+        featured: true,
+        brokerage: 0
+    },
+    {
+        title: "Mangao Industrial Plots",
+        type: "Industrial Land",
+        category: "Plot",
+        price: "3 Cr",
+        location: "Mangao Midc Area",
+        area: "10000 sqft",
+        status: "Active",
+        availability: "Ready to Move",
+        description: "Industrial land suitable for manufacturing units or large godowns. Strategically located near the MIDC industrial belt.",
+        image: "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        images: ["https://images.unsplash.com/photo-1586771107445-d3ca888129ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"],
+        amenities: ["Power Backup", "24/7 Security", "Drainage System"],
+        rera: "N/A",
+        floor: "N/A",
+        facing: "North",
+        furnishing: "Unfurnished",
+        verified: true,
+        featured: false,
+        brokerage: 0
+    }
+];
+
+async function seedDatabase() {
+    console.log('Seeding properties into Supabase...');
+    try {
+        // First, optional: Clear existing data if needed
+        // const { error: deleteError } = await supabase.from('properties').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+        const { data, error } = await supabase
+            .from('properties')
+            .insert(properties)
+            .select();
+
+        if (error) throw error;
+
+        console.log(`Successfully seeded ${data.length} properties!`);
+    } catch (err) {
+        console.error('Seeding failed:', err.message);
+    }
+}
+
+seedDatabase();
