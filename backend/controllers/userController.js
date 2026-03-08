@@ -112,9 +112,9 @@ exports.resetPassword = async (req, res) => {
 
 exports.getStats = async (req, res) => {
     try {
-        const { data: userCount, error: userError } = await supabaseAdmin
+        const { count: uCount, error: userError } = await supabaseAdmin
             .from('profiles')
-            .select('id', { count: 'exact', head: true });
+            .select('*', { count: 'exact', head: true });
 
         const { data: propStats, error: propError } = await supabaseAdmin
             .from('properties')
@@ -134,7 +134,7 @@ exports.getStats = async (req, res) => {
         const soldProperties = propStats.filter(p => p.status?.toLowerCase().includes('sold')).length;
 
         res.json({
-            totalUsers: userCount?.count || 0,
+            totalUsers: uCount || 0,
             totalProperties,
             pendingProperties,
             activeProperties,
