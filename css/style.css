@@ -2956,6 +2956,8 @@ section:nth-of-type(odd) {
     margin: 0;
     /* Reset generic input styles */
     padding: 0;
+    appearance: checkbox !important;
+    -webkit-appearance: checkbox !important;
 }
 
 .forgot-link {

@@ -19,9 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const result = await window.api.login(email, password);
                 if (result.token) {
+                    // Handle Remember Me
+                    const remember = loginForm.querySelector('.remember-me input').checked;
+                    if (remember) {
+                        localStorage.setItem('rld_remember_email', email);
+                    } else {
+                        localStorage.removeItem('rld_remember_email');
+                    }
+
                     window.notifications.show('Login Successful! Redirecting...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'admin/index.html';
+                        if (result.user && result.user.role === 'admin') {
+                            window.location.href = 'admin/index.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
                     }, 1000);
                 } else {
                     window.notifications.show(result.msg || 'Invalid credentials', 'error');
@@ -133,5 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = false;
             }
         });
+    }
+
+    // Populate Remembered Email
+    const rememberedEmail = localStorage.getItem('rld_remember_email');
+    if (rememberedEmail && loginForm) {
+        const emailInput = loginForm.querySelector('input[type="email"]');
+        const rememberCheckbox = loginForm.querySelector('.remember-me input');
+        if (emailInput) emailInput.value = rememberedEmail;
+        if (rememberCheckbox) rememberCheckbox.checked = true;
     }
 });
