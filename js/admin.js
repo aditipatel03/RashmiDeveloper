@@ -55,6 +55,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (totalUsersListEl) totalUsersListEl.textContent = s.totalUsers;
     }
 
+    async function refreshStats() {
+        try {
+            const newStats = await window.api.getDashboardStats();
+            updateAllStats(newStats);
+        } catch (err) {
+            console.error('Stats refresh failed:', err);
+        }
+    }
+
     // --- Dynamic Property Management (for properties.html) ---
     const adminPropsTable = document.getElementById('admin-properties-table');
     if (adminPropsTable) {
@@ -119,15 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    async function refreshStats() {
-        try {
-            const newStats = await window.api.getDashboardStats();
-            updateAllStats(newStats);
-        } catch (err) {
-            console.error('Stats refresh failed:', err);
-        }
-    }
-
     // --- Users Management (for users.html) ---
     const adminUsersTable = document.getElementById('admin-users-table');
     if (adminUsersTable) {
@@ -182,6 +182,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // --- Appointment Management (for appointments.html) ---
+    const adminAppointmentsTable = document.getElementById('admin-appointments-table');
+    if (adminAppointmentsTable) {
+        renderAppointments();
+    }
+
+    async function renderAppointments() {
+        try {
+            const appointments = await window.api.getAppointments();
+
+            if (!appointments || appointments.length === 0) {
+                adminAppointmentsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No appointment requests found.</td></tr>';
+                return;
+            }
+
+            adminAppointmentsTable.innerHTML = appointments.map(app => `
+                <tr>
+                    <td><strong>${new Date(app.created_at).toLocaleDateString()}</strong><br><span style="font-size: 0.8rem; color: #888;">${new Date(app.created_at).toLocaleTimeString()}</span></td>
+                    <td>${app.name}<br><span style="font-size: 0.8rem; color: #888;">${app.phone}</span></td>
+                    <td>${app.property_id ? 'Property: ' + app.property_id.slice(-6) : 'General Enquiry'}</td>
+                    <td><span style="background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Enquiry</span></td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td>
+                        <button class="action-icon-btn approve" title="Confirm" onclick="alert('Feature coming soon')"><i class="ri-check-line"></i></button>
+                        <button class="action-icon-btn delete" title="Cancel" onclick="deleteAppointment('${app.id}')"><i class="ri-close-line"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error('Failed to load appointments:', err);
+            adminAppointmentsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color: red;">Error loading appointments.</td></tr>';
+        }
+    }
+
+    window.deleteAppointment = async (id) => {
+        if (confirm('Are you sure you want to cancel this appointment?')) {
+            try {
+                const response = await window.api.deleteAppointment(id);
+                if (response) {
+                    window.notifications.show('Appointment cancelled', 'success');
+                    renderAppointments();
+                    refreshStats();
+                } else {
+                    window.notifications.show('Failed to delete appointment', 'error');
+                }
+            } catch (err) {
+                window.notifications.show('Error deleting appointment', 'error');
+            }
+        }
+    };
+
     // --- Verification Table (Dashboard index.html) ---
     const verificationsTable = document.getElementById('recent-verifications-table');
     if (verificationsTable) {
@@ -227,6 +278,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.notifications.show('Error approving property', 'error');
         }
     };
-
-    // Appointment logic remains same as pviously read...
 });
