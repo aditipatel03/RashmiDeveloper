@@ -40,6 +40,18 @@ const api = {
         return await response.json();
     },
 
+    async verifyProperty(id) {
+        const response = await fetch(`${API_URL}/properties/${id}`, {
+            method: 'PUT',
+            headers: {
+                'x-auth-token': this.getToken(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ verified: true })
+        });
+        return await response.json();
+    },
+
     // Appointments
     async getAppointments() {
         const response = await fetch(`${API_URL}/appointments`, {

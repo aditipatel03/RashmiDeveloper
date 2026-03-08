@@ -101,6 +101,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateDashboardStats();
     }
 
+    // --- Verification Table (Dashboard) ---
+    const verificationsTable = document.getElementById('recent-verifications-table');
+    if (verificationsTable) {
+        renderRecentVerifications();
+    }
+
+    async function renderRecentVerifications() {
+        try {
+            const properties = await window.api.getProperties();
+            const pending = properties.filter(p => !p.verified).slice(0, 5); // Show last 5 pending
+
+            if (pending.length === 0) {
+                verificationsTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: #888;">No pending verification requests.</td></tr>';
+                return;
+            }
+
+            verificationsTable.innerHTML = pending.map(prop => `
+                <tr>
+                    <td>${prop.title}</td>
+                    <td>Admin</td>
+                    <td>${prop.location}</td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td>
+                        <button class="action-icon-btn approve" onclick="approveProperty('${prop.id}')"><i class="ri-check-line"></i></button>
+                        <button class="action-icon-btn delete" onclick="deleteProperty('${prop.id}')"><i class="ri-close-line"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error('Failed to load verifications:', err);
+        }
+    }
+
+    window.approveProperty = async (id) => {
+        try {
+            const result = await window.api.verifyProperty(id);
+            if (result) {
+                window.notifications.show('Property verified successfully', 'success');
+                renderRecentVerifications();
+                updateDashboardStats();
+            }
+        } catch (err) {
+            window.notifications.show('Error approving property', 'error');
+        }
+    };
+
     // --- Appointment Management (for appointments.html) ---
     const appointmentsTable = document.getElementById('appointments-table');
     if (appointmentsTable) {
