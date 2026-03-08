@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="project-actions">
                         <a href="property-detail.html?id=${prop.id}" class="btn btn-outline">View Details <i class="ri-arrow-right-line"></i></a>
-                        <button class="btn btn-primary" onclick="window.open('https://wa.me/917262993832?text=I am interested in ${prop.title}')"><i class="ri-whatsapp-line"></i> Chat</button>
+                        <button class="btn btn-primary" onclick="window.open('https://wa.me/917276271617?text=I am interested in ${prop.title}')"><i class="ri-whatsapp-line"></i> Chat</button>
                     </div>
                 </div>
             </div>
