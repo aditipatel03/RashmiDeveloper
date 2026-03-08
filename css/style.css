@@ -3028,7 +3028,7 @@ section:nth-of-type(odd) {
     color: var(--primary-color);
     padding: 15px 25px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -3044,12 +3044,32 @@ section:nth-of-type(odd) {
     color: var(--accent-color);
 }
 
-.toast-success { border-left-color: #28a745; }
-.toast-success i { color: #28a745; }
-.toast-error { border-left-color: #dc3545; }
-.toast-error i { color: #dc3545; }
-.toast-warning { border-left-color: #ffc107; }
-.toast-warning i { color: #ffc107; }
+.toast-success {
+    border-left-color: #00c851;
+    background: #f0fff4;
+}
+
+.toast-success i {
+    color: #00c851;
+}
+
+.toast-error {
+    border-left-color: #ff4444;
+    background: #fff5f5;
+}
+
+.toast-error i {
+    color: #ff4444;
+}
+
+.toast-warning {
+    border-left-color: #ffbb33;
+    background: #fffaf0;
+}
+
+.toast-warning i {
+    color: #ffbb33;
+}
 
 .toast.fade-out {
     animation: slideOutRight 0.5s ease forwards;
@@ -3060,24 +3080,43 @@ section:nth-of-type(odd) {
     bottom: 0;
     left: 0;
     height: 3px;
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     width: 100%;
     animation: toastProgress 3s linear forwards;
 }
 
 @keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideOutRight {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
 
 @keyframes toastProgress {
-    from { width: 100%; }
-    to { width: 0%; }
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
 }
 
 /* Loading Spinner */
@@ -3092,5 +3131,7 @@ section:nth-of-type(odd) {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }

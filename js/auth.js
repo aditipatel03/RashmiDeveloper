@@ -50,8 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             try {
-                const result = await window.api.register({ name, email, password });
-                if (result.token || result.msg === 'User Registered') {
+                const phone = registerForm.querySelector('input[placeholder="Phone Number"]').value;
+                const result = await window.api.register({ name, email, password, phone });
+                if (result.token || result.msg.toLowerCase().includes('success')) {
                     window.notifications.show('Account Created Successfully! Please Log In.', 'success');
                     setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {

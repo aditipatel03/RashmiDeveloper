@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
-    const { email, password, username, name } = req.body;
+    const { email, password, username, name, phone } = req.body;
     try {
         // 1. Create User using Admin API (Bypasses rate limits and email confirmation)
         // This requires SUPABASE_SERVICE_ROLE_KEY to be set
@@ -33,6 +33,8 @@ exports.register = async (req, res) => {
             .upsert([{
                 id: authUser.id,
                 username: username || name || email.split('@')[0],
+                email: email,
+                phone: phone || '',
                 role: 'user'
             }], { onConflict: 'id' });
 
