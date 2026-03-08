@@ -5,31 +5,45 @@ const jwt = require('jsonwebtoken');
 exports.register = async (req, res) => {
     const { email, password, username, name } = req.body;
     try {
-        // 1. Create User in Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        // 1. Create User using Admin API (Bypasses rate limits and email confirmation)
+        // This requires SUPABASE_SERVICE_ROLE_KEY to be set
+        let authUser;
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
             email,
             password,
+            email_confirm: true
         });
 
-        if (authError) throw authError;
+        if (authError) {
+            if (authError.message.includes('already registered') || authError.status === 422) {
+                // If user exists, try to get their ID to ensure profile exists
+                const { data: userData } = await supabaseAdmin.auth.admin.listUsers();
+                authUser = userData.users.find(u => u.email === email);
+                if (!authUser) throw authError;
+            } else {
+                throw authError;
+            }
+        } else {
+            authUser = authData.user;
+        }
 
-        // 2. Create Profile using supabaseAdmin (bypasses RLS)
+        // 2. Create/Sync Profile (Bypasses RLS)
         const { error: profileError } = await supabaseAdmin
             .from('profiles')
             .upsert([{
-                id: authData.user.id,
+                id: authUser.id,
                 username: username || name || email.split('@')[0],
                 role: 'user'
             }], { onConflict: 'id' });
 
         if (profileError) {
-            console.error('Profile creation error:', profileError);
-            // Profile failed, but auth user is created. We return success but log error.
-            // Or we could delete the auth user here if we want strict atomicity.
+            console.error('Profile sync error:', profileError);
+            // We don't throw here to avoid "already registered" confusion if auth worked
         }
 
-        res.status(201).json({ msg: 'User registered successfully', user: authData.user });
+        res.status(201).json({ msg: 'User registered successfully', user: authUser });
     } catch (err) {
+        console.error('Registration error details:', err);
         res.status(500).json({ msg: err.message });
     }
 };

@@ -24,8 +24,16 @@ app.get('/', (req, res) => {
 // Check Supabase connection
 const checkConnection = async () => {
     try {
-        const { data, error } = await supabase.from('properties').select('id').limit(1);
-        if (error) throw error;
+        const { data: table1, error: err1 } = await supabase.from('properties').select('id').limit(1);
+        if (err1) throw err1;
+
+        const { data: table2, error: err2 } = await supabase.from('profiles').select('id').limit(1);
+        if (err2) {
+            console.warn('Profiles table check failed. RLS might be blocking or table missing.');
+        } else {
+            console.log('Supabase tables verified successfully!');
+        }
+
         console.log('Supabase connected successfully!');
     } catch (err) {
         console.error('Supabase connection error:', err.message);
