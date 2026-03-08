@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const result = await window.api.resetPassword(password);
                 if (result.msg.includes('success')) {
-                    window.notifications.show('Password updated! Redirecting...', 'success');
+                    window.notifications.show('Changes successful! Redirecting to login...', 'success');
                     setTimeout(() => window.location.href = 'login.html', 1500);
                 } else {
                     window.notifications.show(result.msg, 'error');

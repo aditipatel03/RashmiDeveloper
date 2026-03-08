@@ -83,8 +83,10 @@ exports.login = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
+        // Use the origin from where the request came (Frontend URL)
+        const origin = req.get('origin') || `${req.protocol}://${req.get('host')}`;
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${req.protocol}://${req.get('host')}/reset-password.html`,
+            redirectTo: `${origin}/reset-password.html`,
         });
         if (error) throw error;
         res.json({ msg: 'Password reset instructions sent to your email.' });
@@ -96,7 +98,11 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     const { password } = req.body;
     try {
-        const { error } = await supabase.auth.updateUser({ password });
+        // Use the authenticated user's ID from the middleware
+        const { error } = await supabaseAdmin.auth.admin.updateUserById(
+            req.user.id,
+            { password: password }
+        );
         if (error) throw error;
         res.json({ msg: 'Password updated successfully.' });
     } catch (err) {
