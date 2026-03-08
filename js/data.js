@@ -6,9 +6,11 @@ let properties = [];
 const loadProperties = async () => {
     try {
         properties = await window.api.getProperties();
-        console.log('Properties loaded from API:', properties);
+        // Filter out inactive properties for public view
+        const activeProperties = properties.filter(p => p.status === 'Active');
+        console.log('Active properties loaded:', activeProperties);
         // Trigger a custom event so other scripts know data is ready
-        document.dispatchEvent(new CustomEvent('propertiesLoaded', { detail: properties }));
+        document.dispatchEvent(new CustomEvent('propertiesLoaded', { detail: activeProperties }));
     } catch (err) {
         console.error('Failed to load properties:', err);
     }

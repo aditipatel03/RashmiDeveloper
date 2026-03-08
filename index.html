@@ -547,7 +547,7 @@
     <script src="js/main.js"></script>
     <script>
         document.addEventListener('propertiesLoaded', (e) => {
-            const properties = e.detail.filter(p => p.featured);
+            const properties = e.detail.filter(p => p.featured && p.status === 'Active');
             const grid = document.querySelector('.projects-grid');
             if (grid) {
                 grid.innerHTML = properties.map(p => `

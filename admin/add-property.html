@@ -92,15 +92,18 @@
 
             <div class="form-grid-2">
                 <div class="form-col">
-                    <label class="admin-label">Availability Status</label>
+                    <label class="admin-label">Display Status</label>
                     <select id="prop-status" class="admin-input">
-                        <option>Ready to Move</option>
-                        <option>Under Construction</option>
+                        <option value="Active">Active (Visible on Site)</option>
+                        <option value="Inactive">Inactive (Hidden from Site)</option>
                     </select>
                 </div>
                 <div class="form-col">
-                    <label class="admin-label">Possession Date</label>
-                    <input type="text" id="prop-possession" class="admin-input" placeholder="e.g. Dec 2024" required>
+                    <label class="admin-label">Construction Status</label>
+                    <select id="prop-availability" class="admin-input">
+                        <option>Ready to Move</option>
+                        <option>Under Construction</option>
+                    </select>
                 </div>
             </div>
 

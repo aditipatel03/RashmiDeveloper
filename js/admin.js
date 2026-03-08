@@ -196,7 +196,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('prop-desc').value = prop.description;
                 document.getElementById('prop-type').value = prop.type;
                 document.getElementById('prop-area').value = prop.area;
-                document.getElementById('prop-status').value = prop.status;
+                document.getElementById('prop-status').value = prop.status || 'Active';
+                document.getElementById('prop-availability').value = prop.availability || 'Ready to Move';
                 document.getElementById('prop-possession').value = prop.possession;
                 document.getElementById('prop-rera').value = prop.rera;
                 document.getElementById('prop-floor').value = prop.floor;
@@ -316,6 +317,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('type', document.getElementById('prop-type').value);
             formData.append('area', document.getElementById('prop-area').value);
             formData.append('status', document.getElementById('prop-status').value);
+            formData.append('availability', document.getElementById('prop-availability').value);
             formData.append('possession', document.getElementById('prop-possession').value);
             formData.append('rera', document.getElementById('prop-rera').value);
             formData.append('floor', document.getElementById('prop-floor').value);
