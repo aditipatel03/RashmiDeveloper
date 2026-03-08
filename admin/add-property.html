@@ -94,12 +94,50 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="admin-label">Availability Status</label>
-                <select id="prop-status" class="admin-input">
-                    <option>Ready to Move</option>
-                    <option>Under Construction</option>
-                </select>
+            <div class="form-grid-2">
+                <div class="form-col">
+                    <label class="admin-label">Availability Status</label>
+                    <select id="prop-status" class="admin-input">
+                        <option>Ready to Move</option>
+                        <option>Under Construction</option>
+                    </select>
+                </div>
+                <div class="form-col">
+                    <label class="admin-label">Possession Date</label>
+                    <input type="text" id="prop-possession" class="admin-input" placeholder="e.g. Dec 2024" required>
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-col">
+                    <label class="admin-label">RERA Number</label>
+                    <input type="text" id="prop-rera" class="admin-input" placeholder="e.g. P51700012345">
+                </div>
+                <div class="form-col">
+                    <label class="admin-label">Floor Level</label>
+                    <input type="text" id="prop-floor" class="admin-input" placeholder="e.g. 5th of 15 Floors">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-col">
+                    <label class="admin-label">Facing</label>
+                    <select id="prop-facing" class="admin-input">
+                        <option>East</option>
+                        <option>West</option>
+                        <option>North</option>
+                        <option>South</option>
+                        <option>North-East</option>
+                    </select>
+                </div>
+                <div class="form-col">
+                    <label class="admin-label">Furnishing</label>
+                    <select id="prop-furnishing" class="admin-input">
+                        <option>Unfurnished</option>
+                        <option>Semi-Furnished</option>
+                        <option>Fully Furnished</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">

@@ -209,14 +209,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.querySelector('.page-title h2').textContent = 'Edit Property';
             const prop = await window.api.getProperty(editId);
             if (prop) {
-                document.getElementById('prop-title').value = prop.title;
-                document.getElementById('prop-category').value = prop.category;
-                document.getElementById('prop-price').value = prop.price;
-                document.getElementById('prop-location').value = prop.location;
-                document.getElementById('prop-type').value = prop.type;
-                document.getElementById('prop-area').value = prop.area;
-                document.getElementById('prop-status').value = prop.status;
-                document.getElementById('prop-desc').value = prop.description;
+                document.getElementById('prop-title').value = prop.title || '';
+                document.getElementById('prop-category').value = prop.category || 'Apartment';
+                document.getElementById('prop-price').value = prop.price || '';
+                document.getElementById('prop-location').value = prop.location || 'Raigad';
+                document.getElementById('prop-type').value = prop.type || '';
+                document.getElementById('prop-area').value = prop.area || '';
+                document.getElementById('prop-status').value = prop.status || 'Ready to Move';
+                document.getElementById('prop-desc').value = prop.description || '';
+                if (document.getElementById('prop-possession')) document.getElementById('prop-possession').value = prop.possession || '';
+                if (document.getElementById('prop-rera')) document.getElementById('prop-rera').value = prop.rera || '';
+                if (document.getElementById('prop-floor')) document.getElementById('prop-floor').value = prop.floor || '';
+                if (document.getElementById('prop-facing')) document.getElementById('prop-facing').value = prop.facing || 'East';
+                if (document.getElementById('prop-furnishing')) document.getElementById('prop-furnishing').value = prop.furnishing || 'Unfurnished';
             }
         }
 
@@ -238,6 +243,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('status', document.getElementById('prop-status').value);
             formData.append('description', document.getElementById('prop-desc').value);
             formData.append('verified', true);
+
+            // Enhanced fields
+            if (document.getElementById('prop-possession')) formData.append('possession', document.getElementById('prop-possession').value);
+            if (document.getElementById('prop-rera')) formData.append('rera', document.getElementById('prop-rera').value);
+            if (document.getElementById('prop-floor')) formData.append('floor', document.getElementById('prop-floor').value);
+            if (document.getElementById('prop-facing')) formData.append('facing', document.getElementById('prop-facing').value);
+            if (document.getElementById('prop-furnishing')) formData.append('furnishing', document.getElementById('prop-furnishing').value);
+
+            // Default amenities
+            formData.append('amenities', JSON.stringify(['Lift', 'Security', 'Parking', 'Water Supply']));
 
             const imageFile = document.getElementById('prop-image').files[0];
             if (imageFile) {
