@@ -6,7 +6,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceSlider = document.getElementById('price-slider');
     const priceReadout = document.getElementById('price-readout');
 
+    const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000'
+        : '';
+
     let allProperties = [];
+
+    function populateLocations(data) {
+        const locationSelect = document.getElementById('location-filter');
+        if (!locationSelect) return;
+
+        const locations = [...new Set(data.map(p => p.location.split(',')[0].trim()))].sort();
+        locationSelect.innerHTML = '<option value="">All Locations</option>' +
+            locations.map(loc => `<option value="${loc}">${loc}</option>`).join('');
+    }
+
+    function setupPriceSlider(data) {
+        if (!priceSlider || data.length === 0) return;
+
+        const getPriceValue = (priceStr) => {
+            let p = priceStr.toString().toLowerCase().replace(/,/g, '');
+            if (p.includes('cr')) return parseFloat(p) * 10000000;
+            if (p.includes('l')) return parseFloat(p) * 100000;
+            return parseFloat(p) || 0;
+        };
+
+        const prices = data.map(p => getPriceValue(p.price));
+        const maxPrice = Math.max(...prices);
+
+        priceSlider.min = 0;
+        priceSlider.max = maxPrice;
+        priceSlider.value = maxPrice;
+
+        const sliderMin = document.getElementById('slider-min');
+        const sliderMax = document.getElementById('slider-max');
+        if (sliderMin) sliderMin.textContent = formatPrice(0);
+        if (sliderMax) sliderMax.textContent = formatPrice(maxPrice);
+
+        if (priceReadout) priceReadout.textContent = formatPrice(maxPrice);
+    }
 
     // Function to render properties
     function renderProperties(data) {
@@ -18,11 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        grid.innerHTML = data.map(prop => `
+        grid.innerHTML = data.map(prop => {
+            const imgSrc = prop.image.startsWith('/') ? BASE_URL + prop.image : prop.image;
+            return `
             <div class="project-card">
                 <div class="project-img">
                     <span class="badge-verified">${prop.brokerage === 0 ? '0% Brokerage' : ''}</span>
-                    <img src="${prop.image}" alt="${prop.title}">
+                    <img src="${imgSrc}" alt="${prop.title}">
                     <div class="price-tag">₹${prop.price}${prop.price.toString().includes('Cr') || prop.price.toString().includes('L') ? '' : ' L'}+</div>
                 </div>
                 <div class="project-info">
@@ -39,13 +79,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
         countSpan.textContent = data.length;
     }
 
     // Handle data loaded event
     document.addEventListener('propertiesLoaded', (e) => {
         allProperties = e.detail;
+        populateLocations(allProperties);
+        setupPriceSlider(allProperties);
         applyFilters();
     });
 

@@ -60,10 +60,10 @@ exports.login = async (req, res) => {
 
         if (error) throw error;
 
-        // Fetch user profile for role
+        // Fetch user profile for role and username
         const { data: profile } = await supabase
             .from('profiles')
-            .select('role')
+            .select('role, username')
             .eq('id', data.user.id)
             .single();
 
@@ -72,6 +72,7 @@ exports.login = async (req, res) => {
             user: {
                 id: data.user.id,
                 email: data.user.email,
+                username: profile ? profile.username : (data.user.email.split('@')[0]),
                 role: profile ? profile.role : 'user'
             }
         });

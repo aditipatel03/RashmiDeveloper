@@ -79,24 +79,51 @@
                             background-size: 16px !important;
                             appearance: none !important;
                             -webkit-appearance: none !important;
+                            -moz-appearance: none !important;
+                        }
+
+                        .slider {
+                            -webkit-appearance: none;
+                            width: 100%;
+                            height: 6px;
+                            border-radius: 5px;
+                            background: #eee;
+                            outline: none;
+                            margin: 20px 0;
+                        }
+
+                        .slider::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            width: 20px;
+                            height: 20px;
+                            border-radius: 50%;
+                            background: var(--gold);
+                            cursor: pointer;
+                            border: 3px solid white;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }
+
+                        .slider-labels {
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 0.8rem;
+                            color: #888;
                         }
                     </style>
                     <select id="location-filter">
                         <option value="">All Locations</option>
-                        <option value="Raigad">Raigad</option>
-                        <option value="Pali">Pali</option>
-                        <option value="Mangao">Mangao</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
                     <h4>Max Price: <span id="price-readout" class="text-gold">₹ 2.5 Cr</span></h4>
                     <div class="price-slider-container">
-                        <input type="range" id="price-slider" min="1000000" max="25000000" step="500000"
-                            value="25000000" class="slider">
+                        <input type="range" id="price-slider" min="0" max="10000000" step="100000" value="10000000"
+                            class="slider">
                         <div class="slider-labels">
-                            <span>10L</span>
-                            <span>2.5Cr</span>
+                            <span id="slider-min">0</span>
+                            <span id="slider-max">Max</span>
                         </div>
                     </div>
                 </div>
