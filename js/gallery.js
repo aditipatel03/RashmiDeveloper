@@ -114,7 +114,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <a href="https://wa.me/917276271617?text=I'm interested in ${prop.title}" class="btn btn-whatsapp w-100">
                             <i class="ri-whatsapp-line"></i> Chat on WhatsApp
                         </a>
-                        <button class="btn btn-outline w-100"><i class="ri-calendar-check-line"></i> Book Site Visit</button>
+                    <div class="direct-actions">
+                        <a href="https://wa.me/917276271617?text=I'm interested in ${prop.title}" class="btn btn-whatsapp w-100">
+                            <i class="ri-whatsapp-line"></i> Chat on WhatsApp
+                        </a>
+                        <button class="btn btn-outline w-100" id="book-visit-btn"><i class="ri-calendar-check-line"></i> Book Site Visit</button>
                     </div>
                 </div>
 
@@ -129,14 +133,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
         // Handle form submission
-        document.getElementById('enquiry-form').addEventListener('submit', async (e) => {
+        const enquiryForm = document.getElementById('enquiry-form');
+        enquiryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const name = document.getElementById('enquiry-name').value;
+            const phone = document.getElementById('enquiry-phone').value;
+
             const data = {
-                name: document.getElementById('enquiry-name').value,
-                phone: document.getElementById('enquiry-phone').value,
+                name: name,
+                phone: phone,
                 email: 'direct-enquiry@rld.com', // Default placeholder
                 property_id: prop.id,
-                message: `Enquiry for ${prop.title}`
+                message: `Enquiry for property: ${prop.title}`,
+                status: 'pending',
+                type: 'Enquiry'
             };
 
             try {
@@ -145,6 +155,42 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.target.reset();
             } catch (err) {
                 window.notifications.show('Failed to send enquiry. Please try again.', 'error');
+            }
+        });
+
+        // Handle Book Site Visit button
+        const bookVisitBtn = document.getElementById('book-visit-btn');
+        bookVisitBtn.addEventListener('click', async () => {
+            const name = document.getElementById('enquiry-name').value;
+            const phone = document.getElementById('enquiry-phone').value;
+
+            if (!name || !phone) {
+                window.notifications.show('Please enter your name and phone number first.', 'warning');
+                document.getElementById('enquiry-name').focus();
+                return;
+            }
+
+            const data = {
+                name: name,
+                phone: phone,
+                email: 'direct-visit@rld.com', // Default placeholder
+                property_id: prop.id,
+                message: `Site Visit Request for property: ${prop.title}`,
+                status: 'pending',
+                type: 'Site Visit'
+            };
+
+            try {
+                bookVisitBtn.disabled = true;
+                bookVisitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Booking...';
+                await window.api.submitAppointment(data);
+                window.notifications.show('Site visit request sent! Our team will coordinate with you.', 'success');
+                enquiryForm.reset();
+            } catch (err) {
+                window.notifications.show('Failed to send site visit request.', 'error');
+            } finally {
+                bookVisitBtn.disabled = false;
+                bookVisitBtn.innerHTML = '<i class="ri-calendar-check-line"></i> Book Site Visit';
             }
         });
 

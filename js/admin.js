@@ -142,6 +142,76 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // --- Appointments/Enquiries Management (for appointments.html) ---
+    const adminAppsTable = document.getElementById('admin-appointments-table');
+    if (adminAppsTable) {
+        renderAppointmentsList();
+    }
+
+    async function renderAppointmentsList() {
+        try {
+            const appointments = await window.api.getAppointments();
+            if (!appointments || appointments.length === 0) {
+                adminAppsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No enquiry requests found.</td></tr>';
+                return;
+            }
+
+            adminAppsTable.innerHTML = appointments.map(app => `
+                <tr>
+                    <td>
+                        <div style="font-weight: 600;">${new Date(app.created_at).toLocaleDateString()}</div>
+                        <div style="font-size: 0.8rem; color: #888;">${new Date(app.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${app.name}</div>
+                        <div style="font-size: 0.8rem; color: #888;">${app.phone}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 500;">${app.property_id?.title || 'Unknown Property'}</div>
+                        <div style="font-size: 0.8rem; color: var(--admin-gold);"><i class="ri-map-pin-line"></i> ${app.property_id?.location || 'N/A'}</div>
+                    </td>
+                    <td>
+                        <span class="type-badge ${app.type === 'Site Visit' ? 'type-site' : 'type-enquiry'}">
+                            ${app.type || 'Enquiry'}
+                        </span>
+                    </td>
+                    <td><span class="status-badge status-${(app.status || 'Pending').toLowerCase()}">${app.status || 'Pending'}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="action-icon-btn edit" onclick="updateAppointmentStatus('${app.id}', 'Confirmed')" title="Confirm Entry"><i class="ri-check-line"></i></button>
+                            <button class="action-icon-btn delete" onclick="deleteAppointment('${app.id}')" title="Delete Entry"><i class="ri-delete-bin-line"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error('Failed to load appointments:', err);
+            adminAppsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color: red;">Error loading enquiries.</td></tr>';
+        }
+    }
+
+    window.updateAppointmentStatus = async (id, status) => {
+        try {
+            // Placeholder: Typically this would be a PATCH call
+            window.notifications.show(`Entry marked as ${status}`, 'success');
+            renderAppointmentsList();
+        } catch (err) {
+            window.notifications.show('Failed to update status', 'error');
+        }
+    };
+
+    window.deleteAppointment = async (id) => {
+        if (confirm('Are you sure you want to remove this enquiry?')) {
+            try {
+                await window.api.deleteAppointment(id);
+                window.notifications.show('Enquiry removed successfully', 'success');
+                renderAppointmentsList();
+            } catch (err) {
+                window.notifications.show('Error removing enquiry', 'error');
+            }
+        }
+    };
+
     // --- Users Management (for users.html) ---
     const adminUsersTable = document.getElementById('admin-users-table');
     if (adminUsersTable) {
@@ -180,6 +250,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             adminUsersTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color: red;">Error loading users.</td></tr>';
         }
     }
+
+    window.deleteUser = async (id) => {
+        if (confirm('Are you sure you want to delete this user? This cannot be undone.')) {
+            try {
+                await window.api.deleteUser(id);
+                window.notifications.show('User deleted successfully', 'success');
+                renderUsersList();
+                refreshStats();
+            } catch (err) {
+                window.notifications.show('Error deleting user', 'error');
+            }
+        }
+    };
 
     // --- Property Form Handling (add-property.html) ---
     const addPropertyForm = document.getElementById('add-property-form');

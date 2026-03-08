@@ -164,33 +164,38 @@
             </header>
 
             <div class="profile-container">
-                <form>
+                <form id="profile-form">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Full Name</label>
-                            <input type="text" id="prof-name" value="">
+                            <input type="text" id="prof-name" placeholder="Enter your full name" required>
                         </div>
                         <div class="form-group">
                             <label>Email Address</label>
-                            <input type="email" id="prof-email" value="" readonly>
+                            <input type="email" id="prof-email" placeholder="Enter your email" required>
                         </div>
                         <div class="form-group">
                             <label>Phone Number</label>
-                            <input type="tel" id="prof-phone" value="">
+                            <input type="tel" id="prof-phone" placeholder="Enter phone number">
                         </div>
                         <div class="form-group">
                             <label>City</label>
-                            <input type="text" id="prof-city" value="">
+                            <input type="text" id="prof-city" placeholder="Enter your city">
                         </div>
-                        <div class="form-group full-width">
-                            <label>Current Address</label>
-                            <textarea rows="3">101, Sea View Apartment, Marine Drive, Mumbai - 400020</textarea>
+                        <div class="form-group">
+                            <label>New Password (Optional)</label>
+                            <input type="password" id="prof-password" placeholder="Enter new password to change">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="prof-confirm-password" placeholder="Confirm new password">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;" id="save-profile-btn">
                         Save Changes
                     </button>
+                    <div id="profile-msg" style="margin-top: 15px; font-size: 0.9rem;"></div>
                 </form>
             </div>
 
@@ -220,9 +225,64 @@
             // Fill Form Fields
             const profName = document.getElementById('prof-name');
             const profEmail = document.getElementById('prof-email');
+            const profPhone = document.getElementById('prof-phone');
 
             if (profName) profName.value = displayName;
             if (profEmail) profEmail.value = user.email || '';
+            if (profPhone) profPhone.value = user.phone || '';
+
+            // Handle Form Submission
+            const profileForm = document.getElementById('profile-form');
+            const profileMsg = document.getElementById('profile-msg');
+            const saveBtn = document.getElementById('save-profile-btn');
+
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const password = document.getElementById('prof-password').value;
+                const confirmPassword = document.getElementById('prof-confirm-password').value;
+
+                if (password && password !== confirmPassword) {
+                    profileMsg.textContent = 'Passwords do not match!';
+                    profileMsg.style.color = 'red';
+                    return;
+                }
+
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                profileMsg.textContent = '';
+
+                try {
+                    const updateData = {
+                        username: profName.value,
+                        email: profEmail.value,
+                        phone: profPhone.value
+                    };
+                    if (password) updateData.password = password;
+
+                    const result = await window.api.updateProfile(updateData);
+
+                    profileMsg.textContent = result.msg;
+                    profileMsg.style.color = 'var(--success)';
+
+                    // Update header if name changed
+                    if (window.parent && window.parent.updateHeader) {
+                        window.parent.updateHeader();
+                    }
+
+                    // Reload to reflect changes if needed, or just update UI
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+
+                } catch (err) {
+                    profileMsg.textContent = err.message;
+                    profileMsg.style.color = 'red';
+                } finally {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Changes';
+                }
+            });
         });
     </script>
 </body>

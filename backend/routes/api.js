@@ -18,6 +18,7 @@ router.post('/reset-password', auth, userController.resetPassword);
 router.get('/stats', auth, userController.getStats);
 router.get('/users', auth, userController.getUsers);
 router.delete('/users/:id', auth, userController.deleteUser);
+router.put('/update-profile', auth, userController.updateProfile);
 router.post('/track-visit', userController.trackVisit);
 
 // Property Routes

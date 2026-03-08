@@ -142,6 +142,22 @@ const api = {
         return await this.handleResponse(response);
     },
 
+    async updateProfile(data) {
+        const response = await fetch(`${API_URL}/update-profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': this.getToken()
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await this.handleResponse(response);
+        if (result.user) {
+            localStorage.setItem('rld_user', JSON.stringify(result.user));
+        }
+        return result;
+    },
+
     async getDashboardStats() {
         const response = await fetch(`${API_URL}/stats`, {
             headers: { 'x-auth-token': this.getToken() }

@@ -340,6 +340,32 @@ tr:hover td {
     color: #c62828;
 }
 
+.status-confirmed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.type-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.type-site {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.type-enquiry {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+    border: 1px solid #e1bee7;
+}
+
 .action-icon-btn {
     width: 35px;
     height: 35px;

@@ -182,3 +182,56 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ msg: err.message });
     }
 };
+
+exports.updateProfile = async (req, res) => {
+    const { username, email, phone, password } = req.body;
+    const userId = req.user.id;
+
+    try {
+        // 1. Update Auth User if email or password is provided
+        const authUpdate = {};
+        if (password) authUpdate.password = password;
+        if (email) authUpdate.email = email;
+
+        if (Object.keys(authUpdate).length > 0) {
+            const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(
+                userId,
+                authUpdate
+            );
+            if (authError) throw authError;
+        }
+
+        // 2. Update Profile table
+        const updateData = {};
+        if (username) updateData.username = username;
+        if (email) updateData.email = email;
+        if (phone !== undefined) updateData.phone = phone;
+
+        if (Object.keys(updateData).length > 0) {
+            const { data, error: profileError } = await supabaseAdmin
+                .from('profiles')
+                .update(updateData)
+                .eq('id', userId)
+                .select()
+                .single();
+
+            if (profileError) throw profileError;
+
+            // Update local user object in response
+            res.json({
+                msg: 'Profile updated successfully',
+                user: {
+                    id: userId,
+                    email: data.email,
+                    username: data.username,
+                    role: data.role
+                }
+            });
+        } else {
+            res.json({ msg: 'Profile updated successfully' });
+        }
+    } catch (err) {
+        console.error('Update profile error:', err);
+        res.status(400).json({ msg: err.message });
+    }
+};
