@@ -317,6 +317,11 @@ tr:hover td {
     color: #2e7d32;
 }
 
+.status-inactive {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
 .status-pending {
     background-color: #fff8e1;
     color: #f57f17;

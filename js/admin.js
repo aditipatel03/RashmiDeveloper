@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${prop.category}</td>
                     <td>₹ ${prop.price}</td>
                     <td>${prop.location}</td>
-                    <td><span class="status-badge status-${prop.verified ? 'active' : 'pending'}">${prop.verified ? 'Verified' : 'Pending'}</span></td>
+                    <td><span class="status-badge status-${(prop.status || 'Active').toLowerCase()}">${prop.status || 'Active'}</span></td>
                     <td>
                         <div style="display: flex; gap: 5px;">
                             <button class="action-icon-btn edit" onclick="window.location.href='add-property.html?id=${prop.id}'"><i class="ri-edit-line"></i></button>
