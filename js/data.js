@@ -7,7 +7,7 @@ const loadProperties = async () => {
     try {
         properties = await window.api.getProperties();
         // Filter out inactive properties for public view
-        const activeProperties = properties.filter(p => p.status === 'Active');
+        const activeProperties = properties.filter(p => p.status && p.status.toLowerCase() === 'active');
         console.log('Active properties loaded:', activeProperties);
         // Trigger a custom event so other scripts know data is ready
         document.dispatchEvent(new CustomEvent('propertiesLoaded', { detail: activeProperties }));

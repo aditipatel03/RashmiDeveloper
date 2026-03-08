@@ -186,10 +186,10 @@
                     <p>Track your scheduled site visits and calls.</p>
                 </div>
                 <div class="user-profile">
-                    <div class="user-avatar">AP</div>
+                    <div class="user-avatar" id="dash-avatar">U</div>
                     <div>
-                        <h4 style="font-size: 1rem;">Aditi Patel</h4>
-                        <p style="font-size: 0.8rem; color: var(--text-secondary);">User</p>
+                        <h4 style="font-size: 1rem;" id="dash-full-name">User</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);" id="dash-role">User</p>
                     </div>
                 </div>
             </header>
@@ -229,6 +229,27 @@
         </main>
     </div>
 
+    <script src="../js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = window.api.getUser();
+            if (!user) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            const displayName = user.username || user.email?.split('@')[0] || 'User';
+
+            // Update Profile Info
+            const dashFullName = document.getElementById('dash-full-name');
+            const dashAvatar = document.getElementById('dash-avatar');
+            const dashRole = document.getElementById('dash-role');
+
+            if (dashFullName) dashFullName.textContent = displayName;
+            if (dashAvatar) dashAvatar.textContent = displayName.substring(0, 2).toUpperCase();
+            if (dashRole) dashRole.textContent = user.role === 'admin' ? 'Administrator' : 'Verified User';
+        });
+    </script>
 </body>
 
 </html>

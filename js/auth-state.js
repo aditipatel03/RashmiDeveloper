@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
         navActions.innerHTML = `
             <div class="user-dropdown" style="position: relative; cursor: pointer; display: flex; align-items: center; gap: 10px;">
                 <div style="width: 35px; height: 35px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                    ${user.username?.substring(0, 1).toUpperCase() || 'U'}
+                    ${(user.username || user.email?.split('@')[0] || 'U').substring(0, 1).toUpperCase()}
                 </div>
-                <span class="premium-font" style="font-size: 0.9rem;">${user.username}</span>
+                <span class="premium-font" style="font-size: 0.9rem;">${user.username || user.email?.split('@')[0] || 'User'}</span>
                 <button onclick="window.api.logout()" class="btn btn-outline" style="padding: 5px 15px; font-size: 0.8rem;">Logout</button>
             </div>
             <div class="hamburger" id="hamburger">

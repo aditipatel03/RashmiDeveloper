@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allProperties = [];
 
+    const getPriceValue = (priceStr) => {
+        if (!priceStr) return 0;
+        let p = priceStr.toString().toLowerCase().replace(/,/g, '').trim();
+        if (p.includes('cr')) return parseFloat(p) * 10000000;
+        if (p.includes('l')) return parseFloat(p) * 100000;
+        return parseFloat(p) || 0;
+    };
+
     function populateLocations(data) {
         const locationSelect = document.getElementById('location-filter');
         if (!locationSelect) return;
@@ -24,12 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupPriceSlider(data) {
         if (!priceSlider || data.length === 0) return;
 
-        const getPriceValue = (priceStr) => {
-            let p = priceStr.toString().toLowerCase().replace(/,/g, '');
-            if (p.includes('cr')) return parseFloat(p) * 10000000;
-            if (p.includes('l')) return parseFloat(p) * 100000;
-            return parseFloat(p) || 0;
-        };
 
         const prices = data.map(p => getPriceValue(p.price));
         const maxPrice = Math.max(...prices);
@@ -95,12 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sorting Logic
     function sortProperties(data, criteria) {
         let sorted = [...data];
-        const getPriceValue = (p) => {
-            let price = p.price.toString().toLowerCase().replace(/,/g, '');
-            if (price.includes('cr')) return parseFloat(price) * 10000000;
-            if (price.includes('l')) return parseFloat(price) * 100000;
-            return parseFloat(price) || 0;
-        };
 
         if (criteria === 'price-low') {
             sorted.sort((a, b) => getPriceValue(a) - getPriceValue(b));
@@ -122,23 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const maxPrice = priceSlider ? parseInt(priceSlider.value) : Infinity;
         const sortCriteria = sortSelect ? sortSelect.value : 'newest';
 
+        console.log('Applying filters to', allProperties.length, 'properties');
+        console.log('Filter criteria:', { selectedTypes, selectedLocation, maxPrice });
+
         let filtered = allProperties.filter(p => {
             const matchType = selectedTypes.length === 0 || selectedTypes.includes(p.category);
-            const matchLoc = !selectedLocation || p.location.includes(selectedLocation);
-
-            const getPriceValue = (priceStr) => {
-                let p = priceStr.toString().toLowerCase().replace(/,/g, '');
-                if (p.includes('cr')) return parseFloat(p) * 10000000;
-                if (p.includes('l')) return parseFloat(p) * 100000;
-                return parseFloat(p) || 0;
-            };
-
+            const matchLoc = !selectedLocation || p.location.toLowerCase().includes(selectedLocation.toLowerCase());
             const priceNum = getPriceValue(p.price);
             const matchPrice = priceNum <= maxPrice;
 
             return matchType && matchLoc && matchPrice;
         });
 
+        console.log('Filtered count:', filtered.length);
         filtered = sortProperties(filtered, sortCriteria);
         renderProperties(filtered);
     }
@@ -163,4 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('location-filter')?.addEventListener('change', applyFilters);
     applyBtn?.addEventListener('click', applyFilters);
+
+    // Initial check in case properties were loaded before this script initialized
+    if (typeof window.getProperties === 'function') {
+        allProperties = window.getProperties().filter(p => p.status === 'Active');
+        if (allProperties.length > 0) {
+            console.log('Initializing filters with pre-loaded properties:', allProperties.length);
+            populateLocations(allProperties);
+            setupPriceSlider(allProperties);
+            applyFilters();
+        }
+    }
 });
