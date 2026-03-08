@@ -15,6 +15,10 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.post('/forgot-password', userController.forgotPassword);
 router.post('/reset-password', auth, userController.resetPassword);
+router.get('/stats', auth, userController.getStats);
+router.get('/users', auth, userController.getUsers);
+router.delete('/users/:id', auth, userController.deleteUser);
+router.post('/track-visit', userController.trackVisit);
 
 // Property Routes
 router.get('/properties', propertyController.getProperties);

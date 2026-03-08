@@ -122,6 +122,40 @@ const api = {
         return await response.json();
     },
 
+    async getDashboardStats() {
+        const response = await fetch(`${API_URL}/stats`, {
+            headers: { 'x-auth-token': this.getToken() }
+        });
+        return await response.json();
+    },
+
+    async getUsersList() {
+        const response = await fetch(`${API_URL}/users`, {
+            headers: { 'x-auth-token': this.getToken() }
+        });
+        return await response.json();
+    },
+
+    async trackVisit() {
+        // Simple session-based tracking to avoid overcounting refreshes
+        if (sessionStorage.getItem('rld_visit_tracked')) return;
+
+        try {
+            await fetch(`${API_URL}/track-visit`, { method: 'POST' });
+            sessionStorage.setItem('rld_visit_tracked', 'true');
+        } catch (err) {
+            console.error('Visit tracking failed:', err);
+        }
+    },
+
+    async deleteUser(id) {
+        const response = await fetch(`${API_URL}/users/${id}`, {
+            method: 'DELETE',
+            headers: { 'x-auth-token': this.getToken() }
+        });
+        return await response.json();
+    },
+
     getToken() {
         return localStorage.getItem('rld_token');
     },

@@ -109,3 +109,75 @@ exports.resetPassword = async (req, res) => {
         res.status(400).json({ msg: err.message });
     }
 };
+
+exports.getStats = async (req, res) => {
+    try {
+        const { data: userCount, error: userError } = await supabaseAdmin
+            .from('profiles')
+            .select('id', { count: 'exact', head: true });
+
+        const { data: propStats, error: propError } = await supabaseAdmin
+            .from('properties')
+            .select('verified, status');
+
+        const { data: visitData, error: visitError } = await supabaseAdmin
+            .from('site_visits')
+            .select('count')
+            .eq('visit_date', new Date().toISOString().split('T')[0])
+            .single();
+
+        if (userError || propError) throw userError || propError;
+
+        const totalProperties = propStats.length;
+        const pendingProperties = propStats.filter(p => !p.verified).length;
+        const activeProperties = propStats.filter(p => p.verified).length;
+        const soldProperties = propStats.filter(p => p.status?.toLowerCase().includes('sold')).length;
+
+        res.json({
+            totalUsers: userCount?.count || 0,
+            totalProperties,
+            pendingProperties,
+            activeProperties,
+            soldProperties,
+            visitsToday: visitData?.count || 0
+        });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
+
+exports.getUsers = async (req, res) => {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
+
+exports.trackVisit = async (req, res) => {
+    try {
+        const { error } = await supabaseAdmin.rpc('increment_visit_count');
+        if (error) throw error;
+        res.json({ msg: 'Visit tracked' });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Delete from profiles (auth user will remain but profile gone, or use admin auth delete)
+        const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+        if (error) throw error;
+        res.json({ msg: 'User deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+};

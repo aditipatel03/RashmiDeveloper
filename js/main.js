@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Analytics/Visit Tracking
+    if (window.api && window.api.trackVisit) {
+        window.api.trackVisit();
+    }
     const header = document.querySelector('.main-header');
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.querySelector('.nav-links');
