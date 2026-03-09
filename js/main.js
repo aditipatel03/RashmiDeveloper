@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = new FormData();
                 formData.append('title', document.getElementById('prop-title').value);
                 formData.append('type', 'Residential'); // Default or extract from category
-                formData.append('category', document.getElementById('prop-type-select').value);
+                formData.append('category', document.getElementById('prop-category').value);
                 formData.append('location', document.getElementById('prop-location').value);
                 formData.append('price', document.getElementById('prop-price').value);
                 formData.append('area', document.getElementById('prop-area').value);
