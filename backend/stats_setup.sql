@@ -23,3 +23,22 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Enable RLS (though usually we'll use service role or public insert)
 ALTER TABLE public.site_visits ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can increment visits" ON public.site_visits FOR ALL USING (true);
+
+-- Add appointments table for enquiries and site visits
+CREATE TABLE IF NOT EXISTS public.appointments (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    email TEXT,
+    property_id UUID REFERENCES public.properties(id) ON DELETE SET NULL,
+    message TEXT,
+    status TEXT DEFAULT 'pending',
+    type TEXT DEFAULT 'Enquiry'
+);
+
+-- Enable RLS for appointments
+ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public can insert appointments" ON public.appointments FOR INSERT WITH CHECK (true);
+CREATE POLICY "Public can view appointments" ON public.appointments FOR SELECT USING (true);
+CREATE POLICY "Public can delete appointments" ON public.appointments FOR DELETE USING (true);

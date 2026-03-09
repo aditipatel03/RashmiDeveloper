@@ -114,10 +114,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <a href="https://wa.me/917276271617?text=I'm interested in ${prop.title}" class="btn btn-whatsapp w-100">
                             <i class="ri-whatsapp-line"></i> Chat on WhatsApp
                         </a>
-                    <div class="direct-actions">
-                        <a href="https://wa.me/917276271617?text=I'm interested in ${prop.title}" class="btn btn-whatsapp w-100">
-                            <i class="ri-whatsapp-line"></i> Chat on WhatsApp
-                        </a>
                         <button class="btn btn-outline w-100" id="book-visit-btn"><i class="ri-calendar-check-line"></i> Book Site Visit</button>
                     </div>
                 </div>
