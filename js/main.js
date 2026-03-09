@@ -128,12 +128,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Special check for Step 2 (Images)
             if (formStepNum === 1 && selectedFiles.length === 0) {
-                window.notifications.show('Please upload at least one photo', 'warning');
+                if (window.notifications) {
+                    window.notifications.show('Please upload at least one photo', 'warning');
+                } else {
+                    alert('Please upload at least one photo');
+                }
                 return false;
             }
 
             if (!isValid) {
-                window.notifications.show('Please fill all mandatory fields marked with *', 'warning');
+                if (window.notifications) {
+                    window.notifications.show('Please fill all mandatory fields marked with *', 'warning');
+                } else {
+                    alert('Please fill all mandatory fields marked with *');
+                }
             }
 
             return isValid;
@@ -256,7 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Check Login Status
             if (!window.api.getToken()) {
-                window.notifications.show('Please login to post your property', 'warning');
+                if (window.notifications) {
+                    window.notifications.show('Please login to post your property', 'warning');
+                } else {
+                    alert('Please login to post your property');
+                }
                 setTimeout(() => window.location.href = '/login.html', 2000);
                 return;
             }
@@ -289,7 +301,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error('Submit error:', err);
-                window.notifications.show(err.message || 'Error uploading property', 'error');
+                if (window.notifications) {
+                    window.notifications.show(err.message || 'Error uploading property', 'error');
+                } else {
+                    alert(err.message || 'Error uploading property');
+                }
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = 'Submit Listing';
