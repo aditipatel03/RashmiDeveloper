@@ -192,13 +192,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
 
-                if (!/^[a-zA-Z\\s]+$/.test(name)) {
+                if (!/^[a-zA-Z\s]+$/.test(name)) {
                     window.notifications.show('Please enter a valid name (letters and spaces only).', 'warning');
                     document.getElementById('enquiry-name').focus();
                     return;
                 }
 
-                if (phone.length !== 10 || !/^\\d+$/.test(phone)) {
+                if (phone.length !== 10 || !/^\d+$/.test(phone)) {
                     window.notifications.show('Please enter a valid 10-digit phone number.', 'warning');
                     document.getElementById('enquiry-phone').focus();
                     return;
