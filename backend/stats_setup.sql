@@ -22,6 +22,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Enable RLS (though usually we'll use service role or public insert)
 ALTER TABLE public.site_visits ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public can increment visits" ON public.site_visits;
 CREATE POLICY "Public can increment visits" ON public.site_visits FOR ALL USING (true);
 
 -- Add appointments table for enquiries and site visits
@@ -39,6 +40,9 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 
 -- Enable RLS for appointments
 ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public can insert appointments" ON public.appointments;
 CREATE POLICY "Public can insert appointments" ON public.appointments FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Public can view appointments" ON public.appointments;
 CREATE POLICY "Public can view appointments" ON public.appointments FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Public can delete appointments" ON public.appointments;
 CREATE POLICY "Public can delete appointments" ON public.appointments FOR DELETE USING (true);
