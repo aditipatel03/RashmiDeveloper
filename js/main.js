@@ -214,6 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Auth Gate
+            if (!window.api.getToken()) {
+                window.notifications.login('Please login to send a message via our contact form.');
+                return;
+            }
+
             const name = contactForm.querySelector('input[type="text"]').value;
             const phone = contactForm.querySelector('input[type="tel"]').value;
             const subject = contactForm.querySelector('select').value;

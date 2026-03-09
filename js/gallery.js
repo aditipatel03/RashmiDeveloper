@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <form class="enquiry-form" id="enquiry-form">
                         <div class="input-wrap">
                             <i class="ri-user-line"></i>
-                            <input type="text" id="enquiry-name" placeholder="Full Name" required pattern="[a-zA-Z\s]+" title="Please enter only letters and spaces" maxlength="50">
+                            <input type="text" id="enquiry-name" placeholder="Full Name" required pattern="[a-zA-Z\\s]+" title="Please enter only letters and spaces" maxlength="50">
                         </div>
                         <div class="input-wrap">
                             <i class="ri-phone-line"></i>
@@ -111,9 +111,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </form>
 
                     <div class="direct-actions">
-                        <a href="https://wa.me/917276271617?text=I'm interested in ${prop.title}" class="btn btn-whatsapp w-100">
+                        <button class="btn btn-whatsapp w-100" id="whatsapp-btn">
                             <i class="ri-whatsapp-line"></i> Chat on WhatsApp
-                        </a>
+                        </button>
                         <button class="btn btn-outline w-100" id="book-visit-btn"><i class="ri-calendar-check-line"></i> Book Site Visit</button>
                     </div>
                 </div>
@@ -123,81 +123,111 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Handle form submission
         const enquiryForm = document.getElementById('enquiry-form');
-        enquiryForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('enquiry-name').value;
-            const phone = document.getElementById('enquiry-phone').value;
+        if (enquiryForm) {
+            enquiryForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-                return window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
-            }
+                // Auth Gate
+                if (!window.api.getToken()) {
+                    window.notifications.login('Please login to send enquiries about this property.');
+                    return;
+                }
 
-            const data = {
-                name: name,
-                phone: phone,
-                email: 'direct-enquiry@rld.com', // Default placeholder
-                property_id: prop.id,
-                message: `Enquiry for property: ${prop.title}`,
-                status: 'pending',
-                type: 'Enquiry'
-            };
+                const name = document.getElementById('enquiry-name').value;
+                const phone = document.getElementById('enquiry-phone').value;
 
-            try {
-                await window.api.submitAppointment(data);
-                window.notifications.show('Enquiry sent successfully! Our team will contact you soon.', 'success');
-                e.target.reset();
-            } catch (err) {
-                window.notifications.show('Failed to send enquiry. Please try again.', 'error');
-            }
-        });
+                if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+                    return window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
+                }
+
+                const data = {
+                    name: name,
+                    phone: phone,
+                    email: 'direct-enquiry@rld.com',
+                    property_id: prop.id,
+                    message: `Enquiry for property: ${prop.title}`,
+                    status: 'pending',
+                    type: 'Enquiry'
+                };
+
+                try {
+                    await window.api.submitAppointment(data);
+                    window.notifications.show('Enquiry sent successfully! Our team will contact you soon.', 'success');
+                    enquiryForm.reset();
+                } catch (err) {
+                    window.notifications.show('Failed to send enquiry. Please try again.', 'error');
+                }
+            });
+        }
+
+        // Handle WhatsApp button
+        const whatsappBtn = document.getElementById('whatsapp-btn');
+        if (whatsappBtn) {
+            whatsappBtn.addEventListener('click', () => {
+                if (!window.api.getToken()) {
+                    window.notifications.login('Please login to chat with our sales team on WhatsApp.');
+                    return;
+                }
+                const whatsappUrl = `https://wa.me/917276271617?text=I'm interested in ${prop.title}`;
+                window.open(whatsappUrl, '_blank');
+            });
+        }
 
         // Handle Book Site Visit button
         const bookVisitBtn = document.getElementById('book-visit-btn');
-        bookVisitBtn.addEventListener('click', async () => {
-            const name = document.getElementById('enquiry-name').value;
-            const phone = document.getElementById('enquiry-phone').value;
+        if (bookVisitBtn) {
+            bookVisitBtn.addEventListener('click', async () => {
+                // Auth Gate
+                if (!window.api.getToken()) {
+                    window.notifications.login('Please login to book a site visit.');
+                    return;
+                }
 
-            if (!name || !phone) {
-                window.notifications.show('Please enter your name and phone number first.', 'warning');
-                document.getElementById('enquiry-name').focus();
-                return;
-            }
+                const name = document.getElementById('enquiry-name').value;
+                const phone = document.getElementById('enquiry-phone').value;
 
-            if (!/^[a-zA-Z\s]+$/.test(name)) {
-                window.notifications.show('Please enter a valid name (letters and spaces only).', 'warning');
-                document.getElementById('enquiry-name').focus();
-                return;
-            }
+                if (!name || !phone) {
+                    window.notifications.show('Please enter your name and phone number first.', 'warning');
+                    document.getElementById('enquiry-name').focus();
+                    return;
+                }
 
-            if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-                window.notifications.show('Please enter a valid 10-digit phone number.', 'warning');
-                document.getElementById('enquiry-phone').focus();
-                return;
-            }
+                if (!/^[a-zA-Z\\s]+$/.test(name)) {
+                    window.notifications.show('Please enter a valid name (letters and spaces only).', 'warning');
+                    document.getElementById('enquiry-name').focus();
+                    return;
+                }
 
-            const data = {
-                name: name,
-                phone: phone,
-                email: 'direct-visit@rld.com', // Default placeholder
-                property_id: prop.id,
-                message: `Site Visit Request for property: ${prop.title}`,
-                status: 'pending',
-                type: 'Site Visit'
-            };
+                if (phone.length !== 10 || !/^\\d+$/.test(phone)) {
+                    window.notifications.show('Please enter a valid 10-digit phone number.', 'warning');
+                    document.getElementById('enquiry-phone').focus();
+                    return;
+                }
 
-            try {
-                bookVisitBtn.disabled = true;
-                bookVisitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Booking...';
-                await window.api.submitAppointment(data);
-                window.notifications.show('Site visit request sent! Our team will coordinate with you.', 'success');
-                enquiryForm.reset();
-            } catch (err) {
-                window.notifications.show('Failed to send site visit request.', 'error');
-            } finally {
-                bookVisitBtn.disabled = false;
-                bookVisitBtn.innerHTML = '<i class="ri-calendar-check-line"></i> Book Site Visit';
-            }
-        });
+                const data = {
+                    name: name,
+                    phone: phone,
+                    email: 'direct-visit@rld.com',
+                    property_id: prop.id,
+                    message: `Site Visit Request for property: ${prop.title}`,
+                    status: 'pending',
+                    type: 'Site Visit'
+                };
+
+                try {
+                    bookVisitBtn.disabled = true;
+                    bookVisitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Booking...';
+                    await window.api.submitAppointment(data);
+                    window.notifications.show('Site visit request sent! Our team will coordinate with you.', 'success');
+                    if (enquiryForm) enquiryForm.reset();
+                } catch (err) {
+                    window.notifications.show('Failed to send site visit request.', 'error');
+                } finally {
+                    bookVisitBtn.disabled = false;
+                    bookVisitBtn.innerHTML = '<i class="ri-calendar-check-line"></i> Book Site Visit';
+                }
+            });
+        }
 
         // Gallery logic
         const mainImg = document.getElementById('main-gallery-img');

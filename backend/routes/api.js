@@ -82,4 +82,20 @@ router.delete('/appointments/:id', auth, async (req, res) => {
     }
 });
 
+router.patch('/appointments/:id', auth, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { data, error } = await supabase
+            .from('appointments')
+            .update({ status })
+            .eq('id', req.params.id)
+            .select();
+
+        if (error) throw error;
+        res.json(data[0]);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 module.exports = router;

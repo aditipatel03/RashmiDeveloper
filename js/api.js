@@ -97,6 +97,18 @@ const api = {
         return await this.handleResponse(response);
     },
 
+    async updateAppointmentStatus(id, status) {
+        const response = await fetch(`${API_URL}/appointments/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': this.getToken()
+            },
+            body: JSON.stringify({ status })
+        });
+        return await this.handleResponse(response);
+    },
+
     // Auth
     async login(email, password) {
         const response = await fetch(`${API_URL}/login`, {

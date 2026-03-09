@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.deleteProperty = async (id) => {
-        if (confirm('Are you sure you want to delete this property?')) {
+        window.notifications.confirm('Are you sure you want to delete this property? All associated enquiries will also be affected.', async () => {
             try {
                 const response = await window.api.deleteProperty(id);
                 if (response) {
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 window.notifications.show('Error deleting property', 'error');
             }
-        }
+        });
     };
 
     // --- Appointments/Enquiries Management (for appointments.html) ---
@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <div style="font-size: 0.8rem; color: #888;">${app.phone}</div>
                     </td>
                     <td>
-                        <div style="font-weight: 500;">${app.property_id?.title || 'Unknown Property'}</div>
-                        <div style="font-size: 0.8rem; color: var(--admin-gold);"><i class="ri-map-pin-line"></i> ${app.property_id?.location || 'N/A'}</div>
+                        <div style="font-weight: 500;">${app.property_id ? (app.property_id.title || 'Unknown Property') : '<span style="color: #666; font-style: italic;">General Website Enquiry</span>'}</div>
+                        ${app.property_id ? `<div style="font-size: 0.8rem; color: var(--admin-gold);"><i class="ri-map-pin-line"></i> ${app.property_id.location || 'N/A'}</div>` : '<div style="font-size: 0.8rem; color: #888;">Contact Form Submission</div>'}
                     </td>
                     <td>
                         <span class="type-badge ${app.type === 'Site Visit' ? 'type-site' : 'type-enquiry'}">
@@ -200,16 +200,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     window.updateAppointmentStatus = async (id, status) => {
         try {
-            // Placeholder: Typically this would be a PATCH call
-            window.notifications.show(`Entry marked as ${status}`, 'success');
-            renderAppointmentsList();
+            const result = await window.api.updateAppointmentStatus(id, status);
+            if (result) {
+                window.notifications.show(`Entry marked as ${status}`, 'success');
+                renderAppointmentsList();
+            }
         } catch (err) {
             window.notifications.show('Failed to update status', 'error');
         }
     };
 
     window.deleteAppointment = async (id) => {
-        if (confirm('Are you sure you want to remove this enquiry?')) {
+        window.notifications.confirm('Are you sure you want to remove this enquiry? This action cannot be undone.', async () => {
             try {
                 await window.api.deleteAppointment(id);
                 window.notifications.show('Enquiry removed successfully', 'success');
@@ -217,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 window.notifications.show('Error removing enquiry', 'error');
             }
-        }
+        });
     };
 
     // --- Users Management (for users.html) ---
@@ -260,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     window.deleteUser = async (id) => {
-        if (confirm('Are you sure you want to delete this user? This cannot be undone.')) {
+        window.notifications.confirm('Are you sure you want to delete this user? This cannot be undone.', async () => {
             try {
                 await window.api.deleteUser(id);
                 window.notifications.show('User deleted successfully', 'success');
@@ -269,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 window.notifications.show('Error deleting user', 'error');
             }
-        }
+        });
     };
 
     // --- Property Form Handling (add-property.html) ---
