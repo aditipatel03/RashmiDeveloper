@@ -63,93 +63,121 @@
                         </div>
 
                         <div class="form-grid">
-                            <div class="form-group">
-                                <label><i class="ri-home-4-line"></i> Property Category</label>
-                                <select id="prop-type-select">
-                                    <option value="" disabled selected>Choose category</option>
-                                    <option>Apartment / Flat</option>
-                                    <option>Bungalow / Villa</option>
-                                    <option>Residential Plot</option>
-                                    <option>Commercial Space</option>
-                                </select>
-                            </div>
-
-                            <div class="form-grid-2">
-                                <div class="form-col">
-                                    <label class="admin-label">Floor Level</label>
-                                    <input type="text" id="prop-floor" class="admin-input"
-                                        placeholder="e.g. 5th of 15 Floors">
+                            <div class="input-row">
+                                <div class="input-wrap">
+                                    <label><i class="ri-home-4-line"></i> Property Category <span
+                                            class="text-gold">*</span></label>
+                                    <select id="prop-type-select" required>
+                                        <option value="" disabled selected>Choose category</option>
+                                        <option>Apartment / Flat</option>
+                                        <option>Bungalow / Villa</option>
+                                        <option>Residential Plot</option>
+                                        <option>Commercial Space</option>
+                                    </select>
                                 </div>
-                                <div class="form-col">
-                                    <label class="admin-label">Possession</label>
-                                    <input type="text" id="prop-possession" class="admin-input"
-                                        placeholder="e.g. Dec 2024">
+
+                                <div class="form-grid-2">
+                                    <div class="form-col">
+                                        <label class="admin-label">Floor Level <span class="text-gold">*</span></label>
+                                        <input type="text" id="prop-floor" class="admin-input"
+                                            placeholder="e.g. 5th of 15 Floors" required>
+                                    </div>
+                                    <div class="form-col">
+                                        <label class="admin-label">Possession <span class="text-gold">*</span></label>
+                                        <input type="text" id="prop-possession" class="admin-input"
+                                            placeholder="e.g. Dec 2024" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="ri-home-4-line"></i> Property Title <span
+                                            class="text-gold">*</span></label>
+                                    <input type="text" id="prop-title" placeholder="e.g. Rashmi Heights 2BHK" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="ri-map-pin-2-line"></i> Exact Location <span
+                                            class="text-gold">*</span></label>
+                                    <div class="input-with-icon">
+                                        <input type="text" id="prop-location"
+                                            placeholder="e.g. Raigad, Near Station, Mumbai" required>
+                                        <i class="ri-focus-3-line"></i>
+                                    </div>
+                                    <small class="form-hint">Buyers often search by nearby landmarks or station
+                                        proximity.</small>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label><i class="ri-home-4-line"></i> Property Title</label>
-                                <input type="text" id="prop-title" placeholder="e.g. Rashmi Heights 2BHK">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="ri-map-pin-2-line"></i> Exact Location</label>
-                                <div class="input-with-icon">
-                                    <input type="text" id="prop-location"
-                                        placeholder="e.g. Raigad, Near Station, Mumbai">
-                                    <i class="ri-focus-3-line"></i>
-                                </div>
-                                <small class="form-hint">Buyers often search by nearby landmarks or station
-                                    proximity.</small>
+                            <div class="btns-group" style="margin-top: 30px;">
+                                <button type="button" class="btn btn-primary next-btn w-100">
+                                    <span>Continue to Media</span>
+                                    <i class="ri-arrow-right-m-line"></i>
+                                </button>
                             </div>
                         </div>
 
-                        <div class="btns-group" style="margin-top: 30px;">
-                            <button type="button" class="btn btn-primary next-btn w-100">
-                                <span>Continue to Media</span>
-                                <i class="ri-arrow-right-m-line"></i>
-                            </button>
-                        </div>
-                    </div>
+                        <!-- Step 2 -->
+                        <div class="form-step" id="step-2">
+                            <h3>Photos & Documents <span class="text-gold">*</span></h3>
+                            <p style="font-size: 0.9rem; color: #888; margin-bottom: 20px;">Upload up to 10 photos of
+                                your property. Clear photos help sell faster!</p>
 
-                    <!-- Step 2 -->
-                    <div class="form-step" id="step-2">
-                        <h3>Photos & Documents</h3>
-                        <div class="upload-box">
-                            <i class="ri-upload-cloud-line"></i>
-                            <p>Drag & Drop images or click to upload</p>
-                            <input type="file" multiple style="opacity:0; position:absolute; cursor:pointer;">
-                        </div>
-                        <div class="btns-group">
-                            <button type="button" class="btn btn-outline prev-btn">Previous</button>
-                            <button type="button" class="btn btn-primary next-btn">Next</button>
-                        </div>
-                    </div>
+                            <div class="upload-box" id="image-upload-zone">
+                                <i class="ri-upload-cloud-line"></i>
+                                <p>Drag & Drop images or click to upload</p>
+                                <input type="file" id="prop-images" multiple accept="image/*"
+                                    style="opacity:0; position:absolute; cursor:pointer; width:100%; height:100%; top:0; left:0;">
+                            </div>
 
-                    <!-- Step 3 etc... placeholder for now -->
-                    <div class="form-step" id="step-3">
-                        <h3>Price & More Details</h3>
-                        <div class="form-group">
-                            <label>Expected Price (₹)</label>
-                            <input type="number" id="prop-price" placeholder="85,00,000">
+                            <!-- Preview Container -->
+                            <div id="image-previews" class="image-previews-grid">
+                                <!-- Previews will appear here -->
+                            </div>
+                            <p id="upload-limit-msg" style="color: var(--gold); font-size: 0.8rem; display: none;">
+                                Maximum 10 images allowed.</p>
+                            <div class="btns-group">
+                                <button type="button" class="btn btn-outline prev-btn">Previous</button>
+                                <button type="button" class="btn btn-primary next-btn">Next</button>
+                            </div>
                         </div>
-                        <div class="btns-group">
-                            <button type="button" class="btn btn-outline prev-btn">Previous</button>
-                            <button type="button" class="btn btn-primary next-btn">Next</button>
+
+                        <!-- Step 3 -->
+                        <div class="form-step" id="step-3">
+                            <h3>Price & More Details <span class="text-gold">*</span></h3>
+
+                            <div class="form-group">
+                                <label>Expected Price (₹) <span class="text-gold">*</span></label>
+                                <input type="number" id="prop-price" placeholder="8500000" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Property Area (sq. ft.) <span class="text-gold">*</span></label>
+                                <input type="number" id="prop-area" placeholder="1200" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description <span class="text-gold">*</span></label>
+                                <textarea id="prop-description" rows="4"
+                                    placeholder="Describe your property (amenities, nearby facilities, etc.)"
+                                    required></textarea>
+                            </div>
+                            <div class="btns-group">
+                                <button type="button" class="btn btn-outline prev-btn">Previous</button>
+                                <button type="button" class="btn btn-primary next-btn">Next</button>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Step 4 -->
-                    <div class="form-step" id="step-4">
-                        <div style="text-align:center; padding: 40px 0;">
-                            <i class="ri-checkbox-circle-fill" style="font-size: 5rem; color: var(--success);"></i>
-                            <h3 style="margin-top:20px;">Ready to Post!</h3>
-                            <p>Verify your details and submit to list your property directly.</p>
+                        <!-- Step 4 -->
+                        <div class="form-step" id="step-4">
+                            <div style="text-align:center; padding: 40px 0;">
+                                <i class="ri-checkbox-circle-fill" style="font-size: 5rem; color: var(--success);"></i>
+                                <h3 style="margin-top:20px;">Ready to Post!</h3>
+                                <p>Verify your details and submit to list your property directly.</p>
+                            </div>
+                            <div class="btns-group">
+                                <button type="button" class="btn btn-outline prev-btn">Previous</button>
+                                <button type="submit" class="btn btn-primary">Submit Listing</button>
+                            </div>
                         </div>
-                        <div class="btns-group">
-                            <button type="button" class="btn btn-outline prev-btn">Previous</button>
-                            <button type="submit" class="btn btn-primary">Submit Listing</button>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>

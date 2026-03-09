@@ -3369,3 +3369,129 @@ section:nth-of-type(odd) {
     opacity: 0;
     transition: opacity 0.3s ease;
 }
+
+/* Sell Property Page Enhancements */
+.image-previews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #eee;
+    transition: var(--transition-smooth);
+}
+
+.preview-item.main {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(212, 175, 135, 0.3);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-item .main-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--accent-color);
+    color: var(--primary-color);
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: none;
+    z-index: 5;
+}
+
+.preview-item.main .main-badge {
+    display: block;
+}
+
+.preview-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preview-item:hover .preview-actions {
+    opacity: 1;
+}
+
+.preview-btn {
+    background: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.preview-btn:hover {
+    transform: scale(1.1);
+}
+
+.preview-btn.set-main {
+    color: var(--primary-color);
+}
+
+.preview-btn.remove {
+    color: #ff4444;
+}
+
+.preview-item.main .preview-btn.set-main {
+    background: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.upload-box {
+    border: 2px dashed rgba(212, 175, 135, 0.4);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.upload-box:hover {
+    border-color: var(--accent-color);
+    background: rgba(212, 175, 135, 0.05);
+}
+
+.upload-box i {
+    font-size: 3rem;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+}
+
+/* Step Validation Feedback */
+.form-step input:invalid,
+.form-step select:invalid {
+    border-color: #ff4444 !important;
+}
+
+.text-gold {
+    color: var(--accent-color) !important;
+}

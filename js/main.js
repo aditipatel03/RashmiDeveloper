@@ -97,21 +97,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Multi-step Form Logic (Sell Page)
     const steps = document.querySelectorAll('.form-step');
     const nextBtns = document.querySelectorAll('.next-btn');
     const prevBtns = document.querySelectorAll('.prev-btn');
     const progress = document.getElementById('progress');
     const progressSteps = document.querySelectorAll('.progress-step');
+    const imageUploadZone = document.getElementById('image-upload-zone');
+    const imageInput = document.getElementById('prop-images');
+    const previewContainer = document.getElementById('image-previews');
+    const limitMsg = document.getElementById('upload-limit-msg');
 
     let formStepNum = 0;
+    let selectedFiles = []; // Array of { file, isMain }
+    let thumbnailIndex = 0;
 
     if (steps.length > 0) {
+        // Step Verification Helper
+        function validateCurrentStep() {
+            const currentStep = steps[formStepNum];
+            const fields = currentStep.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+
+            fields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('error-shake');
+                    setTimeout(() => field.classList.remove('error-shake'), 500);
+                    isValid = false;
+                }
+            });
+
+            // Special check for Step 2 (Images)
+            if (formStepNum === 1 && selectedFiles.length === 0) {
+                window.notifications.show('Please upload at least one photo', 'warning');
+                return false;
+            }
+
+            if (!isValid) {
+                window.notifications.show('Please fill all mandatory fields marked with *', 'warning');
+            }
+
+            return isValid;
+        }
+
         nextBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                formStepNum++;
-                updateFormSteps();
-                updateProgressBar();
+                if (validateCurrentStep()) {
+                    formStepNum++;
+                    updateFormSteps();
+                    updateProgressBar();
+                }
             });
         });
 
@@ -124,11 +158,80 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Image Handling Logic
+    if (imageInput && previewContainer) {
+        imageInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            const remaining = 10 - selectedFiles.length;
+
+            if (files.length > remaining) {
+                limitMsg.style.display = 'block';
+            }
+
+            files.slice(0, remaining).forEach(file => {
+                selectedFiles.push({
+                    file: file,
+                    isMain: selectedFiles.length === 0 // First image is main by default
+                });
+            });
+
+            renderPreviews();
+            imageInput.value = ''; // Reset input
+        });
+
+        function renderPreviews() {
+            previewContainer.innerHTML = '';
+            limitMsg.style.display = selectedFiles.length >= 10 ? 'block' : 'none';
+
+            selectedFiles.forEach((item, index) => {
+                const reader = new FileReader();
+                const div = document.createElement('div');
+                div.className = `preview-item ${item.isMain ? 'main' : ''}`;
+
+                reader.onload = (e) => {
+                    div.innerHTML = `
+                        <img src="${e.target.result}">
+                        <div class="main-badge">MAIN</div>
+                        <div class="preview-actions">
+                            <button type="button" class="preview-btn set-main" title="Set as Main">
+                                <i class="ri-star-${item.isMain ? 'fill' : 'line'}"></i>
+                            </button>
+                            <button type="button" class="preview-btn remove" title="Remove">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    // Action Listeners
+                    div.querySelector('.set-main').onclick = () => {
+                        selectedFiles.forEach(f => f.isMain = false);
+                        item.isMain = true;
+                        thumbnailIndex = index;
+                        renderPreviews();
+                    };
+
+                    div.querySelector('.remove').onclick = () => {
+                        const wasMain = item.isMain;
+                        selectedFiles.splice(index, 1);
+                        if (wasMain && selectedFiles.length > 0) {
+                            selectedFiles[0].isMain = true;
+                            thumbnailIndex = 0;
+                        }
+                        renderPreviews();
+                    };
+                };
+                reader.readAsDataURL(item.file);
+                previewContainer.appendChild(div);
+            });
+        }
+    }
+
     function updateFormSteps() {
         steps.forEach(step => {
             step.classList.contains('active') && step.classList.remove('active');
         });
         steps[formStepNum].classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function updateProgressBar() {
@@ -148,28 +251,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const sellForm = document.getElementById('sell-form');
     const successModal = document.getElementById('success-modal');
     if (sellForm && successModal) {
-        sellForm.addEventListener('submit', (e) => {
+        sellForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Capture Data
-            const newProperty = {
-                id: Date.now(), // Unique ID based on timestamp
-                title: document.getElementById('prop-title').value,
-                category: document.getElementById('prop-type-select').value,
-                location: document.getElementById('prop-location').value,
-                price: document.getElementById('prop-price').value,
-                status: 'pending', // Explicitly marked as pending for admin review
-                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-                verified: false,
-                image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80' // Default placeholder
-            };
+            // Check Login Status
+            if (!window.api.getToken()) {
+                window.notifications.show('Please login to post your property', 'warning');
+                setTimeout(() => window.location.href = '/login.html', 2000);
+                return;
+            }
 
-            // Save to LocalStorage
-            let customProperties = JSON.parse(localStorage.getItem('rld_custom_properties')) || [];
-            customProperties.push(newProperty);
-            localStorage.setItem('rld_custom_properties', JSON.stringify(customProperties));
+            const btn = sellForm.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Uploading...';
 
-            successModal.classList.add('active');
+            try {
+                const formData = new FormData();
+                formData.append('title', document.getElementById('prop-title').value);
+                formData.append('type', 'Residential'); // Default or extract from category
+                formData.append('category', document.getElementById('prop-type-select').value);
+                formData.append('location', document.getElementById('prop-location').value);
+                formData.append('price', document.getElementById('prop-price').value);
+                formData.append('area', document.getElementById('prop-area').value);
+                formData.append('description', document.getElementById('prop-description').value);
+                formData.append('floor', document.getElementById('prop-floor').value);
+                formData.append('availability', document.getElementById('prop-possession').value);
+                formData.append('thumbnailIndex', thumbnailIndex);
+                formData.append('status', 'Pending'); // Marked for admin review
+
+                selectedFiles.forEach(item => {
+                    formData.append('images', item.file);
+                });
+
+                const result = await window.api.addProperty(formData);
+                if (result) {
+                    successModal.classList.add('active');
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                window.notifications.show(err.message || 'Error uploading property', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Submit Listing';
+            }
         });
     }
 
