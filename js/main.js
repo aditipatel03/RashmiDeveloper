@@ -307,6 +307,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const result = await window.api.addProperty(formData);
                 if (result) {
+                    const user = window.api.getUser();
+                    if (user && user.role === 'admin') {
+                        const modalBtn = successModal.querySelector('a.btn');
+                        if (modalBtn) {
+                            modalBtn.href = '/admin/properties.html';
+                            modalBtn.textContent = 'Go to Admin Panel';
+                        }
+                    }
                     successModal.classList.add('active');
                 }
             } catch (err) {
