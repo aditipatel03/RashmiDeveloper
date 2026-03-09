@@ -123,6 +123,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Handle form submission
         const enquiryForm = document.getElementById('enquiry-form');
+        const enquiryNameInput = document.getElementById('enquiry-name');
+
+        if (enquiryNameInput) {
+            enquiryNameInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+            });
+        }
+
         if (enquiryForm) {
             enquiryForm.addEventListener('submit', async (e) => {
                 e.preventDefault();

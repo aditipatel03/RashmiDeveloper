@@ -51,15 +51,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Register Form Handler
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
+        const nameInput = registerForm.querySelector('input[placeholder="Full Name"]');
+
+        // Real-time Name Validation
+        if (nameInput) {
+            nameInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+            });
+        }
+
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = registerForm.querySelector('input[placeholder="Full Name"]').value;
+            const name = nameInput.value;
             const email = registerForm.querySelector('input[type="email"]').value;
             const password = registerForm.querySelector('input[type="password"]').value;
             const btn = registerForm.querySelector('button');
 
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Creating Account...';
             btn.disabled = true;
+
+            // Strict Name Check
+            if (!/^[a-zA-Z\s]+$/.test(name)) {
+                window.notifications.show('Name should only contain letters and spaces', 'warning');
+                btn.innerHTML = 'Sign Up';
+                btn.disabled = false;
+                nameInput.focus();
+                return;
+            }
 
             try {
                 const phoneInput = registerForm.querySelector('input[placeholder="10-Digit Mobile Number"]');

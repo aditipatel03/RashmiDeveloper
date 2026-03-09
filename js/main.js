@@ -370,11 +370,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Contact Form Handler
     const contactForm = document.querySelector('.elite-form');
     if (contactForm) {
+        const contactNameInput = contactForm.querySelector('input[type="text"]');
+
+        if (contactNameInput) {
+            contactNameInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+            });
+        }
+
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             // Fetch field values correctly
-            const name = contactForm.querySelector('input[type="text"]').value;
+            const name = contactNameInput.value;
             const emailInput = contactForm.querySelector('input[type="email"]');
             const email = emailInput ? emailInput.value : '';
             const phone = contactForm.querySelector('input[type="tel"]').value;

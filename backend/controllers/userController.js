@@ -27,10 +27,8 @@ exports.register = async (req, res) => {
 
         if (authError) {
             if (authError.message.includes('already registered') || authError.status === 422) {
-                // If user exists, try to get their ID to ensure profile exists
-                const { data: userData } = await supabaseAdmin.auth.admin.listUsers();
-                authUser = userData.users.find(u => u.email === email);
-                if (!authUser) throw authError;
+                // If user exists, we return an error to prevent "stealth linking" or confusion
+                return res.status(400).json({ msg: 'This email is already registered. Please log in instead.' });
             } else {
                 throw authError;
             }
