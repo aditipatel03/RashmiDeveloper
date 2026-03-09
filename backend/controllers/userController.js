@@ -142,12 +142,20 @@ exports.getStats = async (req, res) => {
             .from('profiles')
             .select('created_at, role');
 
-        if (userError || propError || allUsersError) throw userError || propError || allUsersError;
+        const { data: appStats, error: appError } = await supabaseAdmin
+            .from('appointments')
+            .select('type, status');
+
+        if (userError || propError || allUsersError || appError) throw userError || propError || allUsersError || appError;
 
         const totalProperties = propStats.length;
         const pendingProperties = propStats.filter(p => (p.status || 'Active') === 'Inactive').length;
         const activeProperties = propStats.filter(p => (p.status || 'Active') === 'Active').length;
         const soldProperties = propStats.filter(p => p.status?.toLowerCase().includes('sold')).length;
+
+        const totalEnquiries = appStats.filter(a => a.type === 'Enquiry').length;
+        const totalSiteVisits = appStats.filter(a => a.type === 'Site Visit').length;
+        const pendingAppointments = appStats.filter(a => (a.status || 'Pending').toLowerCase() === 'pending').length;
 
         const today = new Date().toISOString().split('T')[0];
         const newUsersToday = allUsers.filter(u => u.created_at.startsWith(today)).length;
@@ -161,9 +169,13 @@ exports.getStats = async (req, res) => {
             pendingProperties,
             activeProperties,
             soldProperties,
+            totalEnquiries,
+            totalSiteVisits,
+            pendingAppointments,
             visitsToday: visitData?.count || 0
         });
     } catch (err) {
+        console.error('Stats Error:', err);
         res.status(500).json({ msg: err.message });
     }
 };

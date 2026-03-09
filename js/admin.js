@@ -58,6 +58,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (totalUsersListEl) totalUsersListEl.textContent = s.totalUsers;
         if (newUsersEl) newUsersEl.textContent = s.newUsersToday || 0;
         if (blockedUsersEl) blockedUsersEl.textContent = s.blockedUsers || 0;
+
+        // Enquiry Stats
+        const totalEnquiriesEl = document.getElementById('stat-total-enquiries');
+        const totalVisitsEl = document.getElementById('stat-total-visits');
+
+        if (totalEnquiriesEl) totalEnquiriesEl.textContent = s.totalEnquiries || 0;
+        if (totalVisitsEl) totalVisitsEl.textContent = s.totalSiteVisits || 0;
     }
 
     async function refreshStats() {
