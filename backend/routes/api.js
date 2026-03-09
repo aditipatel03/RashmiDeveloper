@@ -42,14 +42,32 @@ router.post('/appointments', async (req, res) => {
             return res.status(400).send('Name should contain only letters and spaces');
         }
 
+        // --- NEW: Resilience logic for missing database columns ---
+        // We check what columns exist in the database table before inserting
+        const { data: sampleData } = await supabaseAdmin.from('appointments').select('*').limit(1);
+        const existingCols = sampleData && sampleData.length > 0
+            ? Object.keys(sampleData[0])
+            : ['id', 'name', 'phone', 'message', 'status', 'type', 'property_id', 'created_at', 'subject']; // Minimum fallback
+
+        // Filter the request body to only include columns that exist in the database
+        const filteredData = {};
+        Object.keys(req.body).forEach(key => {
+            if (existingCols.includes(key)) {
+                filteredData[key] = req.body[key];
+            } else {
+                console.warn(`Column "${key}" not found in "appointments" table. Skipping column from insert.`);
+            }
+        });
+
         const { data, error } = await supabaseAdmin
             .from('appointments')
-            .insert([req.body])
+            .insert([filteredData])
             .select();
 
         if (error) throw error;
         res.json(data[0]);
     } catch (err) {
+        console.error('Appointment submission error:', err);
         res.status(500).send(err.message);
     }
 });
