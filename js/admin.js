@@ -122,6 +122,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     function applyFilters() {
         if (!adminPropsTable) return;
         const tbody = adminPropsTable.querySelector('tbody');
+
+        // Defensive check: ensure allProperties is an array
+        if (!Array.isArray(allProperties)) {
+            console.error('allProperties is not an array:', allProperties);
+            allProperties = [];
+        }
+
         const searchTerm = propSearch ? propSearch.value.toLowerCase() : '';
         const statusTerm = statusFilter ? statusFilter.value.toLowerCase() : 'all';
 

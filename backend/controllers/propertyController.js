@@ -2,15 +2,29 @@ const { supabase } = require('../config/supabase');
 
 exports.getProperties = async (req, res) => {
     try {
+        // Attempt to fetch with user info
         const { data, error } = await supabase
             .from('properties')
             .select('*, user_id (username, role, email)')
             .eq('is_deleted', false)
             .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            // Fallback: If user_id column doesn't exist yet, just fetch properties
+            console.warn('Property fetch with user info failed, falling back to simple fetch:', error.message);
+            const { data: fallbackData, error: fallbackError } = await supabase
+                .from('properties')
+                .select('*')
+                .eq('is_deleted', false)
+                .order('created_at', { ascending: false });
+
+            if (fallbackError) throw fallbackError;
+            return res.json(fallbackData);
+        }
+
         res.json(data);
     } catch (err) {
+        console.error('Property fetch error:', err);
         res.status(500).json({ msg: err.message });
     }
 };
@@ -76,12 +90,29 @@ exports.createProperty = async (req, res) => {
             user_id: req.user.id
         };
 
-        const { data, error } = await supabase
+        let { data, error } = await supabase
             .from('properties')
             .insert([propertyData])
             .select();
 
-        if (error) throw error;
+        if (error) {
+            // Fallback: If user_id column doesn't exist, remove it and try again
+            if (error.code === '42703' || error.message.includes('column "user_id" does not exist')) {
+                console.warn('user_id column missing, falling back to insert without it');
+                delete propertyData.user_id;
+                const { data: retryData, error: retryError } = await supabase
+                    .from('properties')
+                    .insert([propertyData])
+                    .select();
+
+                if (retryError) throw retryError;
+                data = retryData;
+                error = null;
+            } else {
+                throw error;
+            }
+        }
+
         res.status(201).json(data[0]);
     } catch (err) {
         res.status(500).json({ msg: err.message });

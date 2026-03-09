@@ -18,12 +18,12 @@ const api = {
     // Properties
     async getProperties() {
         const response = await fetch(`${API_URL}/properties`);
-        return await response.json(); // Public
+        return await this.handleResponse(response);
     },
 
     async getProperty(id) {
         const response = await fetch(`${API_URL}/properties/${id}`);
-        return await response.json(); // Public
+        return await this.handleResponse(response);
     },
 
     async addProperty(formData) {
