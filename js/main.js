@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             fields.forEach(field => {
                 const value = field.value ? field.value.trim() : "";
+                console.log(`Checking field: id=${field.id}, type=${field.tagName}, value="${value}"`);
                 if (!value) {
                     console.warn(`Validation failed for field: ${field.id || field.name || 'Unknown'}`);
                     field.classList.add('error-shake');
