@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <form class="enquiry-form" id="enquiry-form">
                         <div class="input-wrap">
                             <i class="ri-user-line"></i>
-                            <input type="text" id="enquiry-name" placeholder="Your Name" required>
+                            <input type="text" id="enquiry-name" placeholder="Full Name" required pattern="[a-zA-Z\s]+" title="Please enter only letters and spaces" maxlength="50">
                         </div>
                         <div class="input-wrap">
                             <i class="ri-phone-line"></i>
@@ -159,6 +159,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!name || !phone) {
                 window.notifications.show('Please enter your name and phone number first.', 'warning');
+                document.getElementById('enquiry-name').focus();
+                return;
+            }
+
+            if (!/^[a-zA-Z\s]+$/.test(name)) {
+                window.notifications.show('Please enter a valid name (letters and spaces only).', 'warning');
                 document.getElementById('enquiry-name').focus();
                 return;
             }

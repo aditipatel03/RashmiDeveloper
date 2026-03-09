@@ -212,26 +212,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Contact Form Handler
     const contactForm = document.querySelector('.elite-form');
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const phoneInput = contactForm.querySelector('input[type="tel"]');
-            const phone = phoneInput ? phoneInput.value : '';
+            const name = contactForm.querySelector('input[type="text"]').value;
+            const phone = contactForm.querySelector('input[type="tel"]').value;
+            const subject = contactForm.querySelector('select').value;
+            const message = contactForm.querySelector('textarea').value;
+            const btn = contactForm.querySelector('button');
+
+            if (!/^[a-zA-Z\s]+$/.test(name)) {
+                return window.notifications.show('Please enter a valid name (letters only)', 'warning');
+            }
 
             if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-                if (window.notifications) {
-                    window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
-                } else {
-                    alert('Please enter a valid 10-digit phone number');
-                }
-                return;
+                return window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
             }
 
-            if (window.notifications) {
-                window.notifications.show('Thank you! Your message has been sent.', 'success');
-            } else {
-                alert('Thank you! Your message has been sent.');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Sending...';
+
+            try {
+                const data = {
+                    name,
+                    phone,
+                    type: 'Enquiry',
+                    subject,
+                    message: `[${subject}] ${message}`,
+                    created_at: new Date().toISOString()
+                };
+
+                const result = await window.api.submitAppointment(data);
+                if (result) {
+                    window.notifications.show('Thank you! Your message has been sent.', 'success');
+                    contactForm.reset();
+                } else {
+                    window.notifications.show('Failed to send message. Please try again.', 'error');
+                }
+            } catch (err) {
+                window.notifications.show('Error connecting to server', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Deliver My Message <i class="ri-send-plane-fill"></i>';
             }
-            contactForm.reset();
         });
     }
 });

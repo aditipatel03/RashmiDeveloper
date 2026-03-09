@@ -180,6 +180,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                             ${app.type || 'Enquiry'}
                         </span>
                     </td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${app.message || ''}">
+                        ${app.message || '-'}
+                    </td>
                     <td><span class="status-badge status-${(app.status || 'Pending').toLowerCase()}">${app.status || 'Pending'}</span></td>
                     <td>
                         <div style="display: flex; gap: 5px;">

@@ -33,9 +33,13 @@ router.post('/properties/:id/restore', auth, propertyController.restoreProperty)
 // Appointment Routes
 router.post('/appointments', async (req, res) => {
     try {
-        const { phone } = req.body;
+        const { phone, name } = req.body;
         if (!phone || phone.length !== 10 || !/^\d+$/.test(phone)) {
             return res.status(400).send('Please provide a valid 10-digit phone number');
+        }
+
+        if (name && !/^[a-zA-Z\s]+$/.test(name)) {
+            return res.status(400).send('Name should contain only letters and spaces');
         }
 
         const { data, error } = await supabase

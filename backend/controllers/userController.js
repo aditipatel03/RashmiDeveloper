@@ -10,6 +10,11 @@ exports.register = async (req, res) => {
         return res.status(400).json({ msg: 'Please provide a valid 10-digit phone number' });
     }
 
+    // Name Validation
+    if (name && !/^[a-zA-Z\s]+$/.test(name)) {
+        return res.status(400).json({ msg: 'Name should contain only letters and spaces' });
+    }
+
     try {
         // 1. Create User using Admin API (Bypasses rate limits and email confirmation)
         // This requires SUPABASE_SERVICE_ROLE_KEY to be set
@@ -206,6 +211,11 @@ exports.updateProfile = async (req, res) => {
     // Phone Validation (if provided)
     if (phone !== undefined && (phone.length !== 10 || !/^\d+$/.test(phone))) {
         return res.status(400).json({ msg: 'Please provide a valid 10-digit phone number' });
+    }
+
+    // Name Validation (username field used for display name)
+    if (username && !/^[a-zA-Z\s]+$/.test(username)) {
+        return res.status(400).json({ msg: 'Name should contain only letters and spaces' });
     }
 
     try {
