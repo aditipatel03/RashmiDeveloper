@@ -118,13 +118,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 </div>
 
-                <div class="sidebar-card rera-card quick-pricing" style="width: 100%; display: flex; flex-direction: row; align-items: center; gap: 15px; margin-top: 20px;">
-                    <i class="ri-government-fill" style="font-size: 30px; color: var(--accent-color);"></i>
-                    <div>
-                        <span class="price-label" style="font-size: 0.8rem; letter-spacing: 1px;">MAHARERA REGISTERED</span>
-                        <span class="main-price" style="font-size: 1.2rem;">${prop.rera === 'P51700012345' ? 'Verification Available' : prop.rera}</span>
-                    </div>
-                </div>
             </aside>
         `;
 

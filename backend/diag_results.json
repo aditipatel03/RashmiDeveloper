@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-03-09T02:13:48.226Z",
+  "steps": [
+    {
+      "name": "Connection Check",
+      "details": {
+        "status": "OK",
+        "sampleId": "955570fe-5923-40ff-9911-516a3c8c0871"
+      }
+    },
+    {
+      "name": "Table Check",
+      "details": {
+        "status": "EXISTS"
+      }
+    },
+    {
+      "name": "Property Schema",
+      "details": {
+        "idType": "string",
+        "keys": [
+          "id",
+          "title",
+          "type",
+          "category",
+          "price",
+          "location",
+          "area",
+          "status",
+          "verified",
+          "brokerage",
+          "featured",
+          "image",
+          "description",
+          "is_deleted",
+          "amenities",
+          "possession",
+          "rera",
+          "floor",
+          "facing",
+          "furnishing",
+          "created_at",
+          "images",
+          "thumbnail_index",
+          "availability"
+        ]
+      }
+    },
+    {
+      "name": "Insert Test",
+      "details": {
+        "status": "FAILED",
+        "error": {
+          "code": "PGRST204",
+          "details": null,
+          "hint": null,
+          "message": "Could not find the 'type' column of 'appointments' in the schema cache"
+        }
+      }
+    }
+  ]
+}
