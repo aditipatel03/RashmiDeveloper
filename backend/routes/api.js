@@ -4,7 +4,7 @@ const multer = require('multer');
 const auth = require('../middleware/auth');
 const propertyController = require('../controllers/propertyController');
 const userController = require('../controllers/userController');
-const { supabase } = require('../config/supabase');
+const { supabase, supabaseAdmin } = require('../config/supabase');
 
 // Multer in-memory storage for Supabase uploads
 const storage = multer.memoryStorage();
