@@ -115,33 +115,42 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step Verification Helper
         function validateCurrentStep() {
             const currentStep = steps[formStepNum];
+            if (!currentStep) return true;
+
             const fields = currentStep.querySelectorAll('input[required], select[required], textarea[required]');
             let isValid = true;
+            let firstInvalidField = null;
 
             fields.forEach(field => {
-                if (!field.value.trim()) {
+                const value = field.value ? field.value.trim() : "";
+                if (!value) {
+                    console.warn(`Validation failed for field: ${field.id || field.name || 'Unknown'}`);
                     field.classList.add('error-shake');
                     setTimeout(() => field.classList.remove('error-shake'), 500);
                     isValid = false;
+                    if (!firstInvalidField) firstInvalidField = field;
                 }
             });
 
             // Special check for Step 2 (Images)
             if (formStepNum === 1 && selectedFiles.length === 0) {
-                if (window.notifications) {
-                    window.notifications.show('Please upload at least one photo', 'warning');
+                const msg = 'Please upload at least one photo';
+                if (window.notifications && typeof window.notifications.show === 'function') {
+                    window.notifications.show(msg, 'warning');
                 } else {
-                    alert('Please upload at least one photo');
+                    alert(msg);
                 }
                 return false;
             }
 
             if (!isValid) {
-                if (window.notifications) {
-                    window.notifications.show('Please fill all mandatory fields marked with *', 'warning');
+                const msg = 'Please fill all mandatory fields marked with *';
+                if (window.notifications && typeof window.notifications.show === 'function') {
+                    window.notifications.show(msg, 'warning');
                 } else {
-                    alert('Please fill all mandatory fields marked with *');
+                    alert(msg);
                 }
+                if (firstInvalidField) firstInvalidField.focus();
             }
 
             return isValid;
