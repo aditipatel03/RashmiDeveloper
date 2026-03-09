@@ -127,15 +127,25 @@ exports.getStats = async (req, res) => {
             .eq('visit_date', new Date().toISOString().split('T')[0])
             .single();
 
-        if (userError || propError) throw userError || propError;
+        const { data: allUsers, error: allUsersError } = await supabaseAdmin
+            .from('profiles')
+            .select('created_at, role');
+
+        if (userError || propError || allUsersError) throw userError || propError || allUsersError;
 
         const totalProperties = propStats.length;
         const pendingProperties = propStats.filter(p => (p.status || 'Active') === 'Inactive').length;
         const activeProperties = propStats.filter(p => (p.status || 'Active') === 'Active').length;
         const soldProperties = propStats.filter(p => p.status?.toLowerCase().includes('sold')).length;
 
+        const today = new Date().toISOString().split('T')[0];
+        const newUsersToday = allUsers.filter(u => u.created_at.startsWith(today)).length;
+        const blockedUsers = 0; // Placeholder until blocked logic is implemented
+
         res.json({
             totalUsers: uCount || 0,
+            newUsersToday,
+            blockedUsers,
             totalProperties,
             pendingProperties,
             activeProperties,

@@ -52,7 +52,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Users Page Specific
         const totalUsersListEl = document.getElementById('stat-total-users-list');
+        const newUsersEl = document.getElementById('stat-new-users');
+        const blockedUsersEl = document.getElementById('stat-blocked-users');
+
         if (totalUsersListEl) totalUsersListEl.textContent = s.totalUsers;
+        if (newUsersEl) newUsersEl.textContent = s.newUsersToday || 0;
+        if (blockedUsersEl) blockedUsersEl.textContent = s.blockedUsers || 0;
     }
 
     async function refreshStats() {
