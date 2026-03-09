@@ -207,12 +207,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                             ${app.type || 'Enquiry'}
                         </span>
                     </td>
-                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${app.message || ''}">
-                        ${app.message || '-'}
+                    <td style="max-width: 250px;">
+                        ${app.subject ? `<div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: var(--primary-color);">${app.subject}</div>` : ''}
+                        <div style="font-size: 0.9rem; color: #555; white-space: normal; line-height: 1.4;">${app.message || '-'}</div>
                     </td>
                     <td><span class="status-badge status-${(app.status || 'Pending').toLowerCase()}">${app.status || 'Pending'}</span></td>
                     <td>
-                        <div style="display: flex; gap: 5px;">
+                        <div style="display: flex; gap: 8px;">
                             <button class="action-icon-btn edit" onclick="updateAppointmentStatus('${app.id}', 'Confirmed')" title="Confirm Entry"><i class="ri-check-line"></i></button>
                             <button class="action-icon-btn delete" onclick="deleteAppointment('${app.id}')" title="Delete Entry"><i class="ri-delete-bin-line"></i></button>
                         </div>
@@ -221,7 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         } catch (err) {
             console.error('Failed to load appointments:', err);
-            adminAppsTable.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">Error loading enquiries.</td></tr>';
+            adminAppsTable.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red; padding: 20px;">Error loading enquiries. Please ensure you are logged in as admin.</td></tr>';
         }
     }
 

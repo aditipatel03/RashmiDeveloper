@@ -42,7 +42,7 @@ router.post('/appointments', async (req, res) => {
             return res.status(400).send('Name should contain only letters and spaces');
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('appointments')
             .insert([req.body])
             .select();
@@ -55,8 +55,13 @@ router.post('/appointments', async (req, res) => {
 });
 
 router.get('/appointments', auth, async (req, res) => {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ msg: 'Admin access required' });
+    }
+
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('appointments')
             .select('*, property_id(*)')
             .order('created_at', { ascending: false });
@@ -69,8 +74,12 @@ router.get('/appointments', auth, async (req, res) => {
 });
 
 router.delete('/appointments/:id', auth, async (req, res) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ msg: 'Admin access required' });
+    }
+
     try {
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
             .from('appointments')
             .delete()
             .eq('id', req.params.id);
@@ -83,9 +92,13 @@ router.delete('/appointments/:id', auth, async (req, res) => {
 });
 
 router.patch('/appointments/:id', auth, async (req, res) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ msg: 'Admin access required' });
+    }
+
     try {
         const { status } = req.body;
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('appointments')
             .update({ status })
             .eq('id', req.params.id)

@@ -8,6 +8,10 @@ const api = {
             this.logout();
             throw new Error('Unauthorized');
         }
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error || 'Request failed');
+        }
         return await response.json();
     },
 

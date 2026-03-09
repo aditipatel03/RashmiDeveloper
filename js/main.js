@@ -215,18 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Auth Gate
-            if (!window.api.getToken()) {
-                window.notifications.login('Please login to send a message via our contact form.');
-                return;
-            }
-
+            // Fetch field values correctly
             const name = contactForm.querySelector('input[type="text"]').value;
+            const emailInput = contactForm.querySelector('input[type="email"]');
+            const email = emailInput ? emailInput.value : '';
             const phone = contactForm.querySelector('input[type="tel"]').value;
             const subject = contactForm.querySelector('select').value;
             const message = contactForm.querySelector('textarea').value;
             const btn = contactForm.querySelector('button');
 
+            // Validations
             if (!/^[a-zA-Z\s]+$/.test(name)) {
                 return window.notifications.show('Please enter a valid name (letters only)', 'warning');
             }
@@ -235,12 +233,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
             }
 
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return window.notifications.show('Please enter a valid email address', 'warning');
+            }
+
             btn.disabled = true;
             btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Sending...';
 
             try {
                 const data = {
                     name,
+                    email,
                     phone,
                     type: 'Enquiry',
                     subject,
@@ -256,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.notifications.show('Failed to send message. Please try again.', 'error');
                 }
             } catch (err) {
+                console.error('Contact form error:', err);
                 window.notifications.show('Error connecting to server', 'error');
             } finally {
                 btn.disabled = false;
