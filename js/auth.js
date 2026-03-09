@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             try {
-                const phone = registerForm.querySelector('input[placeholder="Phone Number"]').value;
+                const phoneInput = registerForm.querySelector('input[placeholder="10-Digit Mobile Number"]');
+                const phone = phoneInput ? phoneInput.value : '';
                 if (phone.length !== 10 || !/^\d+$/.test(phone)) {
                     window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
                     btn.innerHTML = 'Sign Up';
