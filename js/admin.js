@@ -147,6 +147,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    window.updateAppointmentStatus = async (id, status) => {
+        try {
+            const result = await window.api.updateAppointmentStatus(id, status);
+            if (result) {
+                window.notifications.show(`Entry marked as ${status}`, 'success');
+                renderAppointmentsList();
+            }
+        } catch (err) {
+            console.error('Update status error:', err);
+            window.notifications.show('Failed to update status', 'error');
+        }
+    };
+
+    window.deleteAppointment = async (id) => {
+        window.notifications.confirm('Are you sure you want to remove this enquiry? This action cannot be undone.', async () => {
+            try {
+                await window.api.deleteAppointment(id);
+                window.notifications.show('Enquiry removed successfully', 'success');
+                renderAppointmentsList();
+            } catch (err) {
+                console.error('Delete error:', err);
+                window.notifications.show('Error removing enquiry', 'error');
+            }
+        });
+    };
+
     // --- Appointments/Enquiries Management (for appointments.html) ---
     const adminAppsTable = document.getElementById('admin-appointments-table');
     if (adminAppsTable) {
@@ -157,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const appointments = await window.api.getAppointments();
             if (!appointments || appointments.length === 0) {
-                adminAppsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color: #888;">No enquiry requests found.</td></tr>';
+                adminAppsTable.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: #888;">No enquiry requests found.</td></tr>';
                 return;
             }
 
@@ -170,6 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>
                         <div style="font-weight: 600;">${app.name}</div>
                         <div style="font-size: 0.8rem; color: #888;">${app.phone}</div>
+                        ${app.email ? `<div style="font-size: 0.75rem; color: #aaa;">${app.email}</div>` : ''}
                     </td>
                     <td>
                         <div style="font-weight: 500;">${app.property_id ? (app.property_id.title || 'Unknown Property') : '<span style="color: #666; font-style: italic;">General Website Enquiry</span>'}</div>
@@ -194,33 +221,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
         } catch (err) {
             console.error('Failed to load appointments:', err);
-            adminAppsTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color: red;">Error loading enquiries.</td></tr>';
+            adminAppsTable.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">Error loading enquiries.</td></tr>';
         }
     }
-
-    window.updateAppointmentStatus = async (id, status) => {
-        try {
-            const result = await window.api.updateAppointmentStatus(id, status);
-            if (result) {
-                window.notifications.show(`Entry marked as ${status}`, 'success');
-                renderAppointmentsList();
-            }
-        } catch (err) {
-            window.notifications.show('Failed to update status', 'error');
-        }
-    };
-
-    window.deleteAppointment = async (id) => {
-        window.notifications.confirm('Are you sure you want to remove this enquiry? This action cannot be undone.', async () => {
-            try {
-                await window.api.deleteAppointment(id);
-                window.notifications.show('Enquiry removed successfully', 'success');
-                renderAppointmentsList();
-            } catch (err) {
-                window.notifications.show('Error removing enquiry', 'error');
-            }
-        });
-    };
 
     // --- Users Management (for users.html) ---
     const adminUsersTable = document.getElementById('admin-users-table');
