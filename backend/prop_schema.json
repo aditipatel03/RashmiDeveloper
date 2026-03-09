@@ -23,7 +23,8 @@
     "created_at",
     "images",
     "thumbnail_index",
-    "availability"
+    "availability",
+    "user_id"
   ],
   "sample": {
     "id": "955570fe-5923-40ff-9911-516a3c8c0871",
@@ -51,6 +52,7 @@
       "https://biaulhvivlslciojugvi.supabase.co/storage/v1/object/public/property-images/1772999434509-Screenshot%202026-03-05%20165239.png"
     ],
     "thumbnail_index": 0,
-    "availability": "Ready to Move"
+    "availability": "Ready to Move",
+    "user_id": null
   }
 }

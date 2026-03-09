@@ -136,8 +136,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Filter by Source (Tab)
         if (currentSource === 'official') {
+            // Official = Admin-submitted OR Legacy (no user_id)
             filtered = filtered.filter(p => !p.user_id || p.user_id.role === 'admin');
         } else if (currentSource === 'user') {
+            // User Submission = Regular user submitted
             filtered = filtered.filter(p => p.user_id && p.user_id.role !== 'admin');
         }
 
@@ -161,10 +163,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         tbody.innerHTML = filtered.map(prop => {
-            const isUserListing = prop.user_id && prop.user_id.role !== 'admin';
-            const postedBy = isUserListing
-                ? `<div style="font-weight:600; color:var(--primary-color);">${prop.user_id.username}</div><div style="font-size:0.7rem; color:#888;">User Posting</div>`
-                : `<div style="font-weight:600; color:var(--admin-gold);">Official / Admin</div>`;
+            let postedBy = '';
+            if (!prop.user_id) {
+                postedBy = `<div style="font-weight:600; color:#888;">Official / System</div><div style="font-size:0.7rem; color:#aaa;">Legacy Posting</div>`;
+            } else if (prop.user_id.role === 'admin') {
+                postedBy = `<div style="font-weight:600; color:var(--admin-gold);">Admin (${prop.user_id.username})</div>`;
+            } else {
+                postedBy = `<div style="font-weight:600; color:var(--primary-color);">${prop.user_id.username}</div><div style="font-size:0.7rem; color:#888;">User Posting</div>`;
+            }
 
             return `
                 <tr>

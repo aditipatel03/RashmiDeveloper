@@ -5,7 +5,7 @@ exports.getProperties = async (req, res) => {
         // Attempt to fetch with user info
         const { data, error } = await supabase
             .from('properties')
-            .select('*, user_id (username, role, email)')
+            .select('*, user_id:profiles(username, role, email)')
             .eq('is_deleted', false)
             .order('created_at', { ascending: false });
 
