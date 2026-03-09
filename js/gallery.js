@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <div class="input-wrap">
                             <i class="ri-phone-line"></i>
-                            <input type="tel" id="enquiry-phone" placeholder="Phone Number" required>
+                            <input type="tel" id="enquiry-phone" placeholder="Phone Number" required maxlength="10" pattern="[0-9]{10}">
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Send Enquiry</button>
                     </form>
@@ -127,6 +127,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const name = document.getElementById('enquiry-name').value;
             const phone = document.getElementById('enquiry-phone').value;
+
+            if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+                return window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
+            }
 
             const data = {
                 name: name,
@@ -156,6 +160,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!name || !phone) {
                 window.notifications.show('Please enter your name and phone number first.', 'warning');
                 document.getElementById('enquiry-name').focus();
+                return;
+            }
+
+            if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+                window.notifications.show('Please enter a valid 10-digit phone number.', 'warning');
+                document.getElementById('enquiry-phone').focus();
                 return;
             }
 

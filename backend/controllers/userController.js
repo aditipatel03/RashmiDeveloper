@@ -4,6 +4,12 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     const { email, password, username, name, phone } = req.body;
+
+    // Phone Validation
+    if (!phone || phone.length !== 10 || !/^\d+$/.test(phone)) {
+        return res.status(400).json({ msg: 'Please provide a valid 10-digit phone number' });
+    }
+
     try {
         // 1. Create User using Admin API (Bypasses rate limits and email confirmation)
         // This requires SUPABASE_SERVICE_ROLE_KEY to be set
@@ -196,6 +202,11 @@ exports.deleteUser = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     const { username, email, phone, password } = req.body;
     const userId = req.user.id;
+
+    // Phone Validation (if provided)
+    if (phone !== undefined && (phone.length !== 10 || !/^\d+$/.test(phone))) {
+        return res.status(400).json({ msg: 'Please provide a valid 10-digit phone number' });
+    }
 
     try {
         // 1. Update Auth User if email or password is provided

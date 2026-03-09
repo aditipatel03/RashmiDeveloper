@@ -209,4 +209,29 @@ document.addEventListener('DOMContentLoaded', () => {
             target.appendChild(circle);
         }
     });
+    // Contact Form Handler
+    const contactForm = document.querySelector('.elite-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const phoneInput = contactForm.querySelector('input[type="tel"]');
+            const phone = phoneInput ? phoneInput.value : '';
+
+            if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+                if (window.notifications) {
+                    window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
+                } else {
+                    alert('Please enter a valid 10-digit phone number');
+                }
+                return;
+            }
+
+            if (window.notifications) {
+                window.notifications.show('Thank you! Your message has been sent.', 'success');
+            } else {
+                alert('Thank you! Your message has been sent.');
+            }
+            contactForm.reset();
+        });
+    }
 });

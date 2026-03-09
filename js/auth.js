@@ -63,6 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const phone = registerForm.querySelector('input[placeholder="Phone Number"]').value;
+                if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+                    window.notifications.show('Please enter a valid 10-digit phone number', 'warning');
+                    btn.innerHTML = 'Sign Up';
+                    btn.disabled = false;
+                    return;
+                }
                 const result = await window.api.register({ name, email, password, phone });
                 if (result.token || result.msg.toLowerCase().includes('success')) {
                     window.notifications.show('Account Created Successfully! Please Log In.', 'success');

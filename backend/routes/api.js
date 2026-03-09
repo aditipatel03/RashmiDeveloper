@@ -33,6 +33,11 @@ router.post('/properties/:id/restore', auth, propertyController.restoreProperty)
 // Appointment Routes
 router.post('/appointments', async (req, res) => {
     try {
+        const { phone } = req.body;
+        if (!phone || phone.length !== 10 || !/^\d+$/.test(phone)) {
+            return res.status(400).send('Please provide a valid 10-digit phone number');
+        }
+
         const { data, error } = await supabase
             .from('appointments')
             .insert([req.body])
