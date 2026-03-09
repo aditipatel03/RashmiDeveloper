@@ -11,25 +11,24 @@ module.exports = async (req, res, next) => {
             return res.status(401).json({ msg: 'Token is not valid' });
         }
 
-        // Fetch profile to get role and username using supabaseAdmin to bypass RLS
         const { data: profile, error: pError } = await supabaseAdmin
             .from('profiles')
             .select('role, username')
             .eq('id', user.id)
             .single();
 
-        if (pError) {
-            console.error('Auth Middleware Profile Fetch Error:', pError);
-        }
+        let role = profile ? (profile.role || 'user').toLowerCase() : 'user';
 
         req.user = {
             ...user,
-            role: profile ? (profile.role || 'user').toLowerCase() : 'user',
+            role,
             username: profile ? profile.username : (user.email.split('@')[0])
         };
 
-        // Debug log for admin access issues
-        console.log(`Auth Middleware: User ${user.email} Role: ${req.user.role}`);
+        // Temporary verbose debugging for the user to see in their browser console
+        if (req.user.role !== 'admin' && req.originalUrl.includes('/appointments')) {
+            console.error(`Auth Debug: User ${user.email} (ID: ${user.id}) has role: ${req.user.role}. Profile Error:`, pError);
+        }
 
         next();
     } catch (err) {

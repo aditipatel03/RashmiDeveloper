@@ -57,7 +57,14 @@ router.post('/appointments', async (req, res) => {
 router.get('/appointments', auth, async (req, res) => {
     // Check if user is admin
     if (req.user.role !== 'admin') {
-        return res.status(403).json({ msg: 'Admin access required' });
+        return res.status(403).json({
+            msg: 'Admin access required',
+            debug: {
+                role: req.user.role,
+                email: req.user.email,
+                id: req.user.id
+            }
+        });
     }
 
     try {
