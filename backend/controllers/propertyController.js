@@ -71,11 +71,6 @@ exports.createProperty = async (req, res) => {
             thumbnail_index: thumbnailIndex,
             verified: req.body.verified === 'true' || req.body.verified === true,
             featured: req.body.featured === 'true' || req.body.featured === true,
-            brokerage: parseFloat(req.body.brokerage) || 0,
-            amenities: req.body.amenities ? (typeof req.body.amenities === 'string' ? JSON.parse(req.body.amenities) : req.body.amenities) : [],
-            possession: req.body.possession,
-            rera: req.body.rera,
-            floor: req.body.floor,
             facing: req.body.facing,
             furnishing: req.body.furnishing
         };
@@ -106,11 +101,6 @@ exports.updateProperty = async (req, res) => {
             description: req.body.description,
             verified: req.body.verified === 'true' || req.body.verified === true,
             featured: req.body.featured === 'true' || req.body.featured === true,
-            brokerage: req.body.brokerage ? parseFloat(req.body.brokerage) : undefined,
-            possession: req.body.possession,
-            rera: req.body.rera,
-            floor: req.body.floor,
-            facing: req.body.facing,
             furnishing: req.body.furnishing,
             thumbnail_index: req.body.thumbnailIndex ? parseInt(req.body.thumbnailIndex) : undefined
         };

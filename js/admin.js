@@ -294,7 +294,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('prop-type').value = prop.type;
                 document.getElementById('prop-area').value = prop.area;
                 document.getElementById('prop-availability').value = prop.availability || 'Ready to Move';
-                document.getElementById('prop-rera').value = prop.rera;
                 document.getElementById('prop-floor').value = prop.floor;
                 document.getElementById('prop-facing').value = prop.facing;
                 document.getElementById('prop-furnishing').value = prop.furnishing;
@@ -419,7 +418,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             formData.append('type', document.getElementById('prop-type').value);
             formData.append('area', document.getElementById('prop-area').value);
             formData.append('availability', document.getElementById('prop-availability').value);
-            formData.append('rera', document.getElementById('prop-rera').value);
             formData.append('floor', document.getElementById('prop-floor').value);
             formData.append('facing', document.getElementById('prop-facing').value);
             formData.append('furnishing', document.getElementById('prop-furnishing').value);
