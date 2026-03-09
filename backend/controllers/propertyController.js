@@ -4,7 +4,7 @@ exports.getProperties = async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('properties')
-            .select('*')
+            .select('*, user_id (username, role, email)')
             .eq('is_deleted', false)
             .order('created_at', { ascending: false });
 
@@ -72,7 +72,8 @@ exports.createProperty = async (req, res) => {
             verified: req.body.verified === 'true' || req.body.verified === true,
             featured: req.body.featured === 'true' || req.body.featured === true,
             facing: req.body.facing,
-            furnishing: req.body.furnishing
+            furnishing: req.body.furnishing,
+            user_id: req.user.id
         };
 
         const { data, error } = await supabase

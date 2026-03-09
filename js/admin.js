@@ -78,25 +78,92 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Dynamic Property Management (for properties.html) ---
     const adminPropsTable = document.getElementById('admin-properties-table');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const propSearch = document.getElementById('prop-search');
+    const statusFilter = document.getElementById('prop-status-filter');
+
+    let allProperties = [];
+    let currentSource = 'all';
+
     if (adminPropsTable) {
         renderAdminProperties();
+
+        // Tab Switching
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = '#888';
+                });
+                btn.classList.add('active');
+                btn.style.color = 'var(--admin-gold)';
+                currentSource = btn.dataset.source;
+                applyFilters();
+            });
+        });
+
+        // Search and Status Filters
+        if (propSearch) propSearch.addEventListener('input', applyFilters);
+        if (statusFilter) statusFilter.addEventListener('change', applyFilters);
     }
 
     async function renderAdminProperties() {
-        const tbody = adminPropsTable.querySelector('tbody');
         try {
-            const properties = await window.api.getProperties();
-
-            if (!properties || properties.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: #888;">No properties found in database.</td></tr>';
-                return;
+            allProperties = await window.api.getProperties();
+            applyFilters();
+        } catch (err) {
+            console.error('Failed to load admin properties:', err);
+            if (adminPropsTable) {
+                adminPropsTable.querySelector('tbody').innerHTML = '<tr><td colspan="8" style="text-align:center; color: red;">Error loading properties.</td></tr>';
             }
+        }
+    }
 
-            tbody.innerHTML = properties.map(prop => `
+    function applyFilters() {
+        if (!adminPropsTable) return;
+        const tbody = adminPropsTable.querySelector('tbody');
+        const searchTerm = propSearch ? propSearch.value.toLowerCase() : '';
+        const statusTerm = statusFilter ? statusFilter.value.toLowerCase() : 'all';
+
+        let filtered = allProperties;
+
+        // Filter by Source (Tab)
+        if (currentSource === 'official') {
+            filtered = filtered.filter(p => !p.user_id || p.user_id.role === 'admin');
+        } else if (currentSource === 'user') {
+            filtered = filtered.filter(p => p.user_id && p.user_id.role !== 'admin');
+        }
+
+        // Filter by Status
+        if (statusTerm !== 'all') {
+            filtered = filtered.filter(p => (p.status || 'Active').toLowerCase() === statusTerm);
+        }
+
+        // Filter by Search
+        if (searchTerm) {
+            filtered = filtered.filter(p =>
+                p.title.toLowerCase().includes(searchTerm) ||
+                p.location.toLowerCase().includes(searchTerm) ||
+                (p.user_id?.username || '').toLowerCase().includes(searchTerm)
+            );
+        }
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #888;">No properties found for this view.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(prop => {
+            const isUserListing = prop.user_id && prop.user_id.role !== 'admin';
+            const postedBy = isUserListing
+                ? `<div style="font-weight:600; color:var(--primary-color);">${prop.user_id.username}</div><div style="font-size:0.7rem; color:#888;">User Posting</div>`
+                : `<div style="font-weight:600; color:var(--admin-gold);">Official / Admin</div>`;
+
+            return `
                 <tr>
                     <td>
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="${prop.image}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                            <img src="${prop.image || '../img/placeholder.jpg'}" alt="" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
                         </div>
                     </td>
                     <td>
@@ -106,7 +173,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${prop.category}</td>
                     <td>₹ ${prop.price}</td>
                     <td>${prop.location}</td>
-                    <td><span class="status-badge status-${(prop.status || 'Active').toLowerCase()}" onclick="togglePropertyStatus('${prop.id}', '${prop.status || 'Active'}')">${prop.status || 'Active'}</span></td>
+                    <td>${postedBy}</td>
+                    <td>
+                        <span class="status-badge status-${(prop.status || 'Active').toLowerCase()}" 
+                              style="cursor:pointer;" 
+                              onclick="togglePropertyStatus('${prop.id}', '${prop.status || 'Active'}')">
+                            ${prop.status || 'Active'}
+                        </span>
+                    </td>
                     <td>
                         <div style="display: flex; gap: 5px;">
                             <button class="action-icon-btn edit" onclick="window.location.href='add-property.html?id=${prop.id}'"><i class="ri-edit-line"></i></button>
@@ -116,11 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     </td>
                 </tr>
-            `).join('');
-        } catch (err) {
-            console.error('Failed to load admin properties:', err);
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">Error loading properties.</td></tr>';
-        }
+            `;
+        }).join('');
     }
 
     window.togglePropertyStatus = async (id, currentStatus) => {
