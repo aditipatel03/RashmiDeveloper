@@ -22,13 +22,15 @@ module.exports = async (req, res, next) => {
         req.user = {
             ...user,
             role,
-            username: profile ? profile.username : (user.email.split('@')[0])
+            username: profile ? profile.username : (user.email.split('@')[0]),
+            authDebug: {
+                hasProfile: !!profile,
+                pError: pError ? pError.message : null,
+                idSent: user.id,
+                emailSent: user.email,
+                serviceKeyActive: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+            }
         };
-
-        // Temporary verbose debugging for the user to see in their browser console
-        if (req.user.role !== 'admin' && req.originalUrl.includes('/appointments')) {
-            console.error(`Auth Debug: User ${user.email} (ID: ${user.id}) has role: ${req.user.role}. Profile Error:`, pError);
-        }
 
         next();
     } catch (err) {

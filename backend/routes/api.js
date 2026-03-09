@@ -80,7 +80,8 @@ router.get('/appointments', auth, async (req, res) => {
             debug: {
                 role: req.user.role,
                 email: req.user.email,
-                id: req.user.id
+                id: req.user.id,
+                ...req.user.authDebug
             }
         });
     }
